@@ -1,0 +1,47 @@
+.fl {
+	float: left;
+}
+
+.fr {
+	float: right;
+}
+
+.pb10 {
+	padding-bottom: 10px;
+}
+
+.pt10 {
+	padding-top: 10px;
+}
+
+.mt10 {
+	margin-top: 10px;
+}
+
+.ml5 {
+	margin-left: 5px;
+}
+
+.ml50 {
+	margin-left: 50px;
+}
+
+.mr50 {
+	margin-right: 50px;
+}
+
+.ml75 {
+	margin-left: 75px;
+}
+
+.mr25 {
+	margin-right: 25px;
+}
+
+.bbDark {
+    border-bottom: 1px solid #bbb;
+}
+
+.buDark {
+    border-top: 1px solid #bbb;
+}

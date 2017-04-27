@@ -1,0 +1,66 @@
+.jobListing {
+	width: 90%;
+	float: left;
+	position: relative;
+}
+
+.postJobBtn {
+	right: 10px;
+    top: 4px;
+    position: absolute;
+    height: 30px;
+    font-size: 15px;
+    border-radius: 5px;
+}
+
+.opLinks {
+    height: 30px;
+    vertical-align: middle;
+    line-height: 25px;
+    border-bottom: 1px solid #bbb;
+}
+
+.opLinks a {
+	color: #0079d0;
+	border-right: 2px solid #999;
+    padding-right: 15px;
+    padding-left: 15px;
+    text-decoration: none;
+}
+
+.jobListingDiv {
+    padding: 0;
+}
+
+.jobListingDiv li {
+    height: 65px;
+    padding: 5px 0px;
+    list-style: none;
+    border-top: 1px solid #eee;
+}
+
+.jobListingDiv li a {
+    width: 55%;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.opButtons {
+
+}
+
+.opButtons input {
+    margin-left: 3px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    background: #fff;
+    font-weight: 600;
+    color: #555;
+    font-size: 11px;
+    line-height: 20px;
+    cursor: pointer;
+}
