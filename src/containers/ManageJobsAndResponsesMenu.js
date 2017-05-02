@@ -33,15 +33,16 @@ class ManageJobsAndResponsesMenu extends Component {
 
           <TabBody style = {
             {
-             padding: 10
+             padding: 10,
+             overflow: 'hidden'
             }
           }>
-            <div tabTitle = "Jobs and Responses" id = "JobsAndResponses">
+            <div tabTitle = "Jobs and Responses" id = "JobsAndResponses" className="w90per">
                 <Provider store={store}>
                   <JobListingApp selectedJobType="all"/>
                 </Provider>
             </div> 
-            <div tabTitle = "Saved Jobs" id = "SavedJobs" >
+            <div tabTitle = "Saved Jobs" id = "SavedJobs" className="w90per">
                 <Provider store={store}>
                   <SaveJobsListingApp selectedJobType="all"/>
                 </Provider>

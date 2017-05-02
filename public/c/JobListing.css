@@ -1,22 +1,19 @@
 .jobListing {
 	width: 90%;
-	float: left;
 	position: relative;
 }
 
 .postJobBtn {
-	right: 10px;
-    top: 4px;
+    right: 0px;
     position: absolute;
-    height: 30px;
-    font-size: 15px;
+    height: 25px;
     border-radius: 5px;
+    background: #f5f518;
 }
 
 .opLinks {
-    height: 30px;
+    height: 25px;
     vertical-align: middle;
-    line-height: 25px;
     border-bottom: 1px solid #bbb;
 }
 
@@ -63,4 +60,81 @@
     font-size: 11px;
     line-height: 20px;
     cursor: pointer;
+}
+
+.opButtons select {
+    border-radius: 20px;
+}
+
+.searchBox {
+
+}
+
+.searchAndManageBox {
+    width: 180px;
+    float: left;
+    margin-left: 15px;
+    margin-top: 25px;
+    border: 1px solid #999;
+    border-radius: 5px;
+    font-size: 13px;
+    line-height: 35px;
+    text-indent: 10px;
+}
+
+.searchHeader {
+    background-color: #17a7f3;
+    color: #fff;
+    font-weight: 500;
+}
+
+.jobListLoading {
+    background-image: url('../img/card_loading.gif');
+    background-repeat: no-repeat;
+    height: 1000px;
+}
+
+.numPagesSection {
+    line-height: 1.5;
+    margin-right: 5px;
+}
+
+.searchForm {
+}
+
+.searchForm input[type="checkbox"] {
+    vertical-align: middle;
+    margin-right: 10px;
+    margin-left: 0px;
+}
+
+.searchForm input, select{
+    height: 23px;
+    border-radius: 3px;
+    border: 1px solid #aaa;
+    padding: 2px;
+    margin-left: 10px;
+}
+
+.searchForm label {
+    display: block;
+}
+
+.imgCalendar {
+    height: 25px;
+    margin-bottom: -7px;
+    margin-left: 5px;
+}
+
+.searchButton {    
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.accountUtilization, .manageDuplicate {
+    line-height: 1.8;
+    text-align: left;
+    margin-left: 10px;
+    margin-right: 3px;
+    text-indent: 0px;
 }

@@ -43,6 +43,10 @@ class SaveJobsListingApp extends Component {
     dispatch(fetchJobsIfNeeded(jobType))
   }
 
+  operation() {
+    console.log(123);
+  }
+
   render() {
     const { selectedJobType, jobs, isFetching, lastUpdated } = this.props
     console.log(this.props,897)
@@ -57,7 +61,12 @@ class SaveJobsListingApp extends Component {
             onClick={this.fetchJobsOfType.bind(null,'cricket')}>
             Auto Saved Jobs
           </a>
-        </div>   	
+        </div>  
+        <p className="opButtons pb10 bbDark">
+          <input type="checkbox" name="jobId[]" value='all'/>
+          <input type="button" value="Delete" onClick={this.operation.bind(null)} />
+          <div className="disIn fr"><strong className="numPagesSection">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page</div>
+        </p> 	
         <p>
           {lastUpdated &&
             <span>
@@ -83,6 +92,11 @@ class SaveJobsListingApp extends Component {
             <Jobs jobs={jobs} />
           </div>
         }  
+        <p className="opButtons pb10 bbDark">
+          <input type="checkbox" name="jobId[]" value='all'/>
+          <input type="button" value="Delete" onClick={this.operation.bind(null)} />
+          <div className="disIn fr"><strong className="numPagesSection">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page</div>
+        </p>  
       </div>
     )
   }

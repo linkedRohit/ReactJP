@@ -80,9 +80,9 @@ class JobListingApp extends Component {
           <input type="button" value="Unshare" onClick={this.operation.bind(null)} />
           <input type="button" value="Remove" onClick={this.operation.bind(null)} />
           <input type="button" value="Invite Referrals" onClick={this.operation.bind(null)} />
-          <strong className="ml5">Posted By </strong> <Picker onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
-          <strong className="ml5">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
-          <strong className="ml5">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+          <strong className="ml75">Posted By </strong> <Picker onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
+          <strong className="ml15">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
+          <strong className="ml15">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
         </p>        
         <p>
           {lastUpdated &&
@@ -98,8 +98,8 @@ class JobListingApp extends Component {
             </a>
           }
         </p>
-        {isFetching && jobs.length === 0 &&
-          <h2>Loading...</h2>
+        {isFetching && jobs.length === 0 &&          
+          <div className="jobListLoading"></div>
         }
         {!isFetching && jobs.length === 0 &&
           <h2>Empty.</h2>
@@ -116,9 +116,9 @@ class JobListingApp extends Component {
           <input type="button" value="Unshare" onClick={this.operation.bind(null)} />
           <input type="button" value="Remove" onClick={this.operation.bind(null)} />
           <input type="button" value="Invite Referrals" onClick={this.operation.bind(null)} />
-          <strong className="ml5">Posted By </strong> <Picker onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
-          <strong className="ml5">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
-          <strong className="ml5">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+          <strong className="ml75">Posted By </strong> <Picker onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
+          <strong className="ml15">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
+          <strong className="ml15">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
         </p>
       </div>
     )

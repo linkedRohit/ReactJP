@@ -18,8 +18,16 @@
 	margin-top: 10px;
 }
 
+.mt20 {
+	margin-top: 20px;
+}
+
 .ml5 {
 	margin-left: 5px;
+}
+
+.ml15 {
+	margin-left: 15px;
 }
 
 .ml50 {
@@ -44,4 +52,26 @@
 
 .buDark {
     border-top: 1px solid #bbb;
+}
+
+.w90per {
+	width: 90%;
+}
+
+.disIn {
+	display: inline;
+}
+
+.disBlock {
+	display: block;
+}
+
+.lh1{
+	line-height: 1;
+}
+
+.jpButton {
+    width: 75px;
+    height: 30px;
+    background: #e6e6ea;
 }
