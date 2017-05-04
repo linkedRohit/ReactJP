@@ -10,8 +10,8 @@ export default function configureStore(preloadedState) {
     jobListingReducer,
     preloadedState,
     applyMiddleware(
-      thunkMiddleware//,
-      //loggerMiddleware
+      thunkMiddleware,
+      loggerMiddleware
     )
   )
 }

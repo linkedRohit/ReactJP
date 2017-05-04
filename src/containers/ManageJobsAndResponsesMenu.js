@@ -28,6 +28,7 @@ class ManageJobsAndResponsesMenu extends Component {
           onActivate = {
             //this.refreshJobListing('soccer')
             (index) => console.log('Tab ' + index + ' was activated!')
+            //this.props.activateSeletedTab(index)
             //this.refreshJobListing('soccer')
           } >
 
@@ -37,12 +38,12 @@ class ManageJobsAndResponsesMenu extends Component {
              overflow: 'hidden'
             }
           }>
-            <div tabTitle = "Jobs and Responses" id = "JobsAndResponses" className="w90per">
+            <div tabTitle = "Jobs and Responses" id = "JobsAndResponses">
                 <Provider store={store}>
                   <JobListingApp selectedJobType="all"/>
                 </Provider>
             </div> 
-            <div tabTitle = "Saved Jobs" id = "SavedJobs" className="w90per">
+            <div tabTitle = "Saved Jobs" id = "SavedJobs">
                 <Provider store={store}>
                   <SaveJobsListingApp selectedJobType="all"/>
                 </Provider>

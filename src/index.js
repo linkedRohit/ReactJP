@@ -2,15 +2,17 @@ import 'babel-polyfill'
 
 import React from 'react'
 import { render } from 'react-dom'
-import ManageJobsAndResponsesMenu from './containers/ManageJobsAndResponsesMenu'
-import ManageJobsAndResponsesSearch from './containers/ManageJobsAndResponsesSearch'
+import JobListingContainer from './containers/JobListing/JobListingContainer'
+import { Provider } from 'react-redux'
+import configureStore from './configureStore'
+
+const store = configureStore()
+
 render(
-  <ManageJobsAndResponsesMenu />,
+  <Provider store={store}>
+    <JobListingContainer />
+  </Provider>,
   document.getElementById('jobListingApp')
 )
 
-render(
-  <ManageJobsAndResponsesSearch />,
-  document.getElementById('searchMenu')
-)
 

@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import TabPanel, { TabBody, TabStrip } from 'react-tab-panel'
-import { selectedJobListingType, fetchJobsIfNeeded, invalidateJobListing } from '../actions/jobListing'
-import Picker from '../components/Picker'
-import Jobs from '../components/Jobs'
+import { selectedJobListingType, fetchJobsIfNeeded, invalidateJobListing } from '../../actions/jobListing'
+import Picker from '../Picker'
+import Jobs from '../Jobs'
 import { Provider } from 'react-redux'
-import configureStore from '../configureStore'
+import configureStore from '../../configureStore'
 
 const store = configureStore()
 
@@ -61,7 +61,7 @@ class JobListingApp extends Component {
             Eapps
           </a>
           <a href='#'
-            onClick={this.fetchJobsOfType.bind(null,'Emails')}>
+            onClick={this.fetchJobsOfType.bind(null,'Cricket')}>
             Emails
           </a>
           <a href='#'
