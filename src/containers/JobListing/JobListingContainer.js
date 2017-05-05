@@ -1,6 +1,5 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchJobsIfNeeded } from '../../actions/jobListing'
 import JobListingView from '../../components/JobListing/JobListingView'
 import ManageJobsAndResponsesSearch from '../ManageJobsAndResponsesSearch'
 
@@ -8,13 +7,13 @@ import ManageJobsAndResponsesSearch from '../ManageJobsAndResponsesSearch'
 //This is a Container component
 class JobListingContainer extends Component {
    render() {
-      const { getJobsForListing, errors } = this.props;
+      const { updateJobType, errors } = this.props;
 
       //Component part
       return (
          <div>
             {/*<ErrorList errors={errors} />*/}
-            <JobListingView getJobsForListing={getJobsForListing} />
+            <JobListingView updateJobType={updateJobType} />
          </div>
       )
    }
@@ -24,7 +23,11 @@ class JobListingContainer extends Component {
 //Container part
 const mapDispatchToProps = (dispatch) => {
     return {
-        getJobsForListing: (jobType) => dispatch(fetchJobsIfNeeded(jobType))
+        updateJobType: (jobType) => dispatch({
+          type: "UPDATE_JOB_TYPE",
+          selectedJobType: jobType
+        })
+
         /*toggleTab:()=>{
           dispatch({
             type:"TOGGLE_TAB",

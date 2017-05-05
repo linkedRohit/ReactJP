@@ -15,9 +15,9 @@ export default class Jobs extends Component {
       return(
         <li key={i}>          
           <input type="checkbox" name="jobId[]" value={i}/>
-          <a href={"http://google.com/" + i} title={job.title}>{job.title}</a>
-          <span className="ml75">{job.author}</span>
-          <span className="mr25 fr"><a style={{ overflow: 'visible' }} href={"http://csm.naukri.com/" + i}>{job.score}</a></span>
+          <a href={"http://google.com/" + i} title={job.title} style={{width :"450px"}}>{job.title}</a>
+          <div style={{ display: 'inline-block', width: '250px', textAlign:'center'}}>{job.author}</div>
+          <a style={{ overflow: 'visible', width: '50px', textAlign:'right' }} href={"http://csm.naukri.com/" + i}><span style={{width :"50px"}}>{job.score}</span></a>
         </li>
       );
     });

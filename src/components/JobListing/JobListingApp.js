@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import TabPanel, { TabBody, TabStrip } from 'react-tab-panel'
-import { selectedJobListingType, fetchJobsIfNeeded, invalidateJobListing } from '../../actions/jobListing'
+import { selectJobType, fetchJobsIfNeeded, invalidateJobListing } from '../../actions/jobListing'
 import Picker from '../Picker'
 import Jobs from '../Jobs'
 import { Provider } from 'react-redux'
@@ -10,10 +10,10 @@ import configureStore from '../../configureStore'
 const store = configureStore()
 
 class JobListingApp extends Component {
+
   constructor(props) {
     super(props)
     this.fetchJobsOfType = this.fetchJobsOfType.bind(this);
-    this.handleRefreshClick = this.handleRefreshClick.bind(this);
   }
 
   componentDidMount() {
@@ -22,54 +22,47 @@ class JobListingApp extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.selectedJobType !== prevProps.selectedJobType) {
-      const { dispatch, selectedJobType } = this.props;
-      dispatch(fetchJobsIfNeeded(selectedJobType));
-    }
+      if (this.props.selectedJobType !== prevProps.selectedJobType) {
+        const { dispatch, selectedJobType } = this.props;
+        dispatch(fetchJobsIfNeeded(selectedJobType));
+      }
   }
 
-  handleRefreshClick(e) {
+  fetchJobsOfType(e) {
     e.preventDefault()
-
-    const { dispatch, selectedJobType } = this.props
-    dispatch(invalidateJobListing(selectedJobType))
-    dispatch(fetchJobsIfNeeded(selectedJobType))
-  }
-
-  fetchJobsOfType(jobType) {
-    jobType = jobType ? jobType : 'all';
-
-    const { dispatch } = this.props
-    dispatch(invalidateJobListing(jobType))
-    dispatch(fetchJobsIfNeeded(jobType))
+    let jobType = e.target.dataset.type;
+    const { dispatch } = this.props;
+    dispatch(invalidateJobListing(jobType));
+    dispatch(fetchJobsIfNeeded(jobType));
   }
 
   operation() {
     console.log(123);
   }
+
   render() {
     const { selectedJobType, jobs, isFetching, lastUpdated } = this.props
     return (
       <div> 
         <div className="opLinks">
-          <a href='#'
-            onClick={this.fetchJobsOfType.bind(null,'soccer')}>
+          <a href='#' data-type="all"
+            onClick={this.fetchJobsOfType}>
             All
           </a>
-          <a href='#'
-            onClick={this.fetchJobsOfType.bind(null,'Eapps')}>
+          <a href='#' data-type="cricket"
+            onClick={this.fetchJobsOfType}>
             Eapps
           </a>
-          <a href='#'
-            onClick={this.fetchJobsOfType.bind(null,'Cricket')}>
+          <a href='#' data-type="politics"
+            onClick={this.fetchJobsOfType}>
             Emails
           </a>
-          <a href='#'
-            onClick={this.fetchJobsOfType.bind(null,'CSM')}>
+          <a href='#' data-type="rugbyunion"
+            onClick={this.fetchJobsOfType}>
             CSM
           </a>
-          <a href='#' style={{border:0}}
-            onClick={this.fetchJobsOfType.bind(null,'OMJ')}>
+          <a href='#' data-type="golf"
+            onClick={this.fetchJobsOfType}>
             Other Media Jobs
           </a>
         </div>
@@ -92,8 +85,8 @@ class JobListingApp extends Component {
             </span>
           }
           {!isFetching &&
-            <a href='#'
-               onClick={this.handleRefreshClick.bind(null)}>
+            <a href='#' data-type="all"
+               onClick={this.fetchJobsOfType.bind(null)}>
               Refresh
             </a>
           }
@@ -130,7 +123,8 @@ JobListingApp.PropTypes = {
   jobs: PropTypes.array.isRequired,
   isFetching: PropTypes.bool.isRequired,
   lastUpdated: PropTypes.number,
-  dispatch: PropTypes.func.isRequired
+  dispatch: PropTypes.func.isRequired,
+  updateJobType: PropTypes.func.isRequired
 }
 
 function mapStateToProps(state) {

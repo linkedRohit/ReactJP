@@ -11,7 +11,6 @@ import 'react-tab-panel/index.css' //for the default look
 class JobListingView extends Component {
 	constructor(props) {
 	    super(props);
-	    this.getJobsForListing= this.getJobsForListing.bind(this);
 	}
 
 	render() {
@@ -32,14 +31,15 @@ class JobListingView extends Component {
 		          <TabBody style = {
 		            {
 		             padding: 10,
-		             overflow: 'hidden'
+		             overflow: 'hidden',
+		             maxWidth: 850
 		            }
 		          }>
 		            <div tabTitle = "Jobs and Responses" id = "JobsAndResponses">
-		                <JobListingApp selectedJobType="all"/>
+		                <JobListingApp updateJobType={this.props.updateJobType}/>
 		            </div> 
 		            <div tabTitle = "Saved Jobs" id = "SavedJobs">
-		                <SaveJobsListingApp selectedJobType="all"/>
+		                <SaveJobsListingApp updateJobType={this.props.updateJobType}/>
 		            </div>
 		          </TabBody>
 		        </TabPanel>
@@ -50,15 +50,10 @@ class JobListingView extends Component {
 		    </div>
 		)
 	}
-
-	getJobsForListing(e) {
-		e.preventDefault();
-        this.props.getJobsForListing(this.jobType.value);
-    }
 }
 
 JobListingView.propTypes = {
-	getJobsForListing: PropTypes.func.isRequired
+	updateJobType: PropTypes.func.isRequired
 };
 
 export default JobListingView;

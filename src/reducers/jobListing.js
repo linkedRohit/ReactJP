@@ -1,13 +1,15 @@
 import { combineReducers } from 'redux'
 import {
   SELECT_JOBLISTING, INVALIDATE_JOBLISTING,
-  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR
+  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR, UPDATE_JOB_TYPE
 } from '../actions/jobListing'
 
-function selectedJobListingType(state = 'all', action) {
+const ALL = 'all';
+
+function selectJobType(state='all', action) {
   switch (action.type) {
   case SELECT_JOBLISTING:
-    return action.joblistingType
+    return action.selectedJobType
   default:
     return state
   }
@@ -16,25 +18,37 @@ function selectedJobListingType(state = 'all', action) {
 function jobs(state = {
   isFetching: false,
   didInvalidate: false,
-  jobs: []
+  jobs: [],
+  selectedJobType: ALL
 }, action) {
+  let jobType;
+  if (typeof action.selectedJobType != "undefined") {
+    jobType = action.selectedJobType
+  } else {
+    jobType = ALL
+  }
   switch (action.type) {
     case INVALIDATE_JOBLISTING:
       return Object.assign({}, state, {
-        didInvalidate: true
+        didInvalidate: true,
+        selectJobType: jobType
       })
     case REQUEST_JOBS:
       return Object.assign({}, state, {
         isFetching: true,
-        didInvalidate: false
+        didInvalidate: false,
+        selectJobType: jobType
       })
     case RECEIVE_JOBS:
-      return Object.assign({}, state, {
+
+      var newState = Object.assign({}, state, {
         isFetching: false,
         didInvalidate: false,
         jobs: action.jobs,
-        lastUpdated: action.receivedAt
-      })
+        lastUpdated: action.receivedAt,
+        selectJobType: jobType
+      });
+      return newState;
     case JOB_FETCH_ERROR:
       return Object.assign({}, state, {
         hasErrored: action.hasErrored
@@ -50,8 +64,9 @@ function jobsByJoblisting(state = { }, action) {
     case INVALIDATE_JOBLISTING:
     case RECEIVE_JOBS:
     case REQUEST_JOBS:
+    case UPDATE_JOB_TYPE:
       return Object.assign({}, state, {
-        [action.joblistingType]: jobs(state[action.joblistingType], action)
+        [action.selectJobType]: jobs(state[action.selectJobType], action)
       })
 
     case JOB_FETCH_ERROR:
@@ -64,7 +79,7 @@ function jobsByJoblisting(state = { }, action) {
 
 const jobListingReducer = combineReducers({
   jobsByJoblisting,
-  selectedJobListingType
+  selectJobType
 })
 
 export default jobListingReducer

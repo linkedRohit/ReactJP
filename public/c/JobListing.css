@@ -37,7 +37,6 @@
 }
 
 .jobListingDiv li a {
-    width: 55%;
     text-overflow: ellipsis;
     display: inline-block;
     white-space: nowrap;
