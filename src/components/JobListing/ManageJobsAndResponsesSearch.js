@@ -1,10 +1,6 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 
 class ManageJobsAndResponsesSearch extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     //const { selectedJobType, jobs, isFetching, lastUpdated } = this.props
     return (
@@ -21,8 +17,8 @@ class ManageJobsAndResponsesSearch extends Component {
             <option value="reference">Reference</option>
           </select>
           <label>Job posted duration:</label>
-          <span><input type="text" placeholder="From Date" name="postedFromDate" size="13"/><img className="imgCalendar" src="../img/calendar.svg"/></span>
-          <span><input type="text" placeholder="To Date" name="postedToDate" size="13"/><img className="imgCalendar" src="../img/calendar.svg"/></span>
+          <span><input type="text" placeholder="From Date" name="postedFromDate" size="13"/><img alt='From Date' className="imgCalendar" src="../img/calendar.svg"/></span>
+          <span><input type="text" placeholder="To Date" name="postedToDate" size="13"/><img alt='To Date' className="imgCalendar" src="../img/calendar.svg"/></span>
           <label>Job Type:</label>
           <div className="lh1">
             <label><input type="checkbox" name="privateJob"/>Private Jobs</label>
@@ -44,7 +40,7 @@ class ManageJobsAndResponsesSearch extends Component {
         {/*Manage Duplicates Section*/}
         <div className="searchHeader mt20">Manage Duplicates</div>
         <div className="manageDuplicate mt10">
-          <div>Block duplicate applies across eapps jobs <img src="../img/info.png" height='10px'/><br/><a href="#">Manage</a></div>
+          <div>Block duplicate applies across eapps jobs <img alt='Help text' src="../img/info.png" height='10px'/><br/><a href="#">Manage</a></div>
         </div>
       </div>
     )

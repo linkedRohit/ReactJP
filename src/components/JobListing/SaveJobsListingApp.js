@@ -1,20 +1,15 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import TabPanel, { TabBody, TabStrip } from 'react-tab-panel'
-import { selectedJobListingType, fetchJobsIfNeeded, invalidateJobListing } from '../../actions/jobListing'
-import Picker from '../Picker'
-import Jobs from '../Jobs'
-import { Provider } from 'react-redux'
-import configureStore from '../../configureStore'
-
-const store = configureStore()
+import { fetchJobsIfNeeded, invalidateJobListing, reloadJobListing} from '../../actions/jobListing'
+import Picker from '../Common/Picker'
+import Jobs from './Jobs'
 
 class SaveJobsListingApp extends Component {
   constructor(props) {
     super(props)
-    this.selectedJobType = props.listingType;
+    this.selectedSaveJobsTab = 'all';
     this.fetchJobsOfType = this.fetchJobsOfType.bind(this);
-    this.handleRefreshClick = this.handleRefreshClick.bind(this);
+    this.loadJobsPerPage = this.loadJobsPerPage.bind(this);
   }
 
   componentDidMount() {
@@ -29,43 +24,59 @@ class SaveJobsListingApp extends Component {
     }
   }
 
-  handleRefreshClick(e) {
+  fetchJobsOfType(e) {
     e.preventDefault()
-
-    const { dispatch, selectedJobType } = this.props
-    dispatch(invalidateJobListing(selectedJobType))
-    dispatch(fetchJobsIfNeeded(selectedJobType))
-  }
-
-  fetchJobsOfType(jobType) {
-    const { dispatch } = this.props
-    dispatch(invalidateJobListing(jobType))
-    dispatch(fetchJobsIfNeeded(jobType))
+    let jobType = e.target.dataset.type;
+    if(typeof jobType === "undefined") {
+      jobType = this.selectedSaveJobsTab;
+    } else {
+      this.selectedSaveJobsTab = jobType;
+    }
+    const { dispatch } = this.props;
+    dispatch(invalidateJobListing(jobType));
+    dispatch(fetchJobsIfNeeded(jobType));
   }
 
   operation() {
     console.log(123);
   }
 
+  loadJobsPerPage(jobShowCount) {
+    const { dispatch } = this.props;
+    var criteria = {};
+    criteria.jobsPerPage = jobShowCount;
+    criteria.selectedJobType = this.selectedSaveJobsTab;
+    dispatch(reloadJobListing(criteria));
+  }
+
   render() {
-    const { selectedJobType, jobs, isFetching, lastUpdated } = this.props
-    console.log(this.props,897)
+    const { jobs, isFetching, lastUpdated, criteria } = this.props;
+    let jobsPerPage;
+    if(typeof criteria.criteria === "undefined") {
+      jobsPerPage = 20;
+    } else {
+      jobsPerPage = criteria.criteria.jobsPerPage;
+    }
+    
     return (
       <div>        
       	<div className="opLinks">
-          <a href='#'
-            onClick={this.fetchJobsOfType.bind(null,'soccer')}>
+          <a href='#' data-type="productivity"
+            onClick={this.fetchJobsOfType.bind(null)}>
             Saved Jobs
           </a>
-          <a href='#' style={{border:0}}
-            onClick={this.fetchJobsOfType.bind(null,'cricket')}>
+          <a href='#' style={{border:0}} data-type="fnf"
+            onClick={this.fetchJobsOfType.bind(null)}>
             Auto Saved Jobs
           </a>
         </div>  
         <p className="opButtons pb10 bbDark">
           <input type="checkbox" name="jobId[]" value='all'/>
           <input type="button" value="Delete" onClick={this.operation.bind(null)} />
-          <div className="disIn fr"><strong className="numPagesSection">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page</div>
+          <span className="disIn fr">
+            <strong className="numPagesSection">Show </strong>
+            <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+          </span>
         </p> 	
         <p>
           {lastUpdated &&
@@ -76,7 +87,7 @@ class SaveJobsListingApp extends Component {
           }
           {!isFetching &&
             <a href='#'
-               onClick={this.handleRefreshClick.bind(null)}>
+               onClick={this.fetchJobsOfType.bind(null)}>
               Refresh
             </a>
           }
@@ -95,7 +106,10 @@ class SaveJobsListingApp extends Component {
         <p className="opButtons pb10 bbDark">
           <input type="checkbox" name="jobId[]" value='all'/>
           <input type="button" value="Delete" onClick={this.operation.bind(null)} />
-          <div className="disIn fr"><strong className="numPagesSection">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page</div>
+          <span className="disIn fr">
+            <strong className="numPagesSection">Show </strong>
+            <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+          </span>
         </p>  
       </div>
     )
@@ -115,7 +129,7 @@ function mapStateToProps(state) {
   const {
     isFetching,
     lastUpdated,
-    jobs: jobs
+    jobs
   } = jobsByJoblisting[selectedJobType] || {
     isFetching: true,
     jobs: []

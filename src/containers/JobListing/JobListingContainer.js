@@ -1,45 +1,38 @@
-import React, { PropTypes, Component } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import JobListingView from '../../components/JobListing/JobListingView'
-import ManageJobsAndResponsesSearch from '../ManageJobsAndResponsesSearch'
-
+import JobListing from '../../components/JobListing/JobListing'
+import { updateScopeOfListing, toggleTab } from '../../actions/jobListing'
 
 //This is a Container component
 class JobListingContainer extends Component {
    render() {
-      const { updateJobType, errors } = this.props;
+      //const { criteria, errors } = this.props;
+      const { criteria } = this.props;
 
       //Component part
       return (
          <div>
             {/*<ErrorList errors={errors} />*/}
-            <JobListingView updateJobType={updateJobType} />
+            <JobListing criteria={criteria} toggleTab={toggleTab}/>
          </div>
       )
    }
 }
 
-
 //Container part
 const mapDispatchToProps = (dispatch) => {
     return {
-        updateJobType: (jobType) => dispatch({
-          type: "UPDATE_JOB_TYPE",
-          selectedJobType: jobType
-        })
-
-        /*toggleTab:()=>{
-          dispatch({
-            type:"TOGGLE_TAB",
-            paload:1
-          })
-        }*/
+        Criteria: (params) => {dispatch(updateScopeOfListing())},
+        toggleTab: (index) => {dispatch(toggleTab)}
     }
 };
 
 const mapStateToProps = (state) => {
    return {
-       errors: state.errors
+       jobType: state.selectJobType,
+       errors: state.errors,
+       criteria: state.Criteria,
+       tab: state.tab
    };
 };
 

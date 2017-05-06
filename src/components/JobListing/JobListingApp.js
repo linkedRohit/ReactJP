@@ -1,19 +1,16 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import TabPanel, { TabBody, TabStrip } from 'react-tab-panel'
-import { selectJobType, fetchJobsIfNeeded, invalidateJobListing } from '../../actions/jobListing'
-import Picker from '../Picker'
-import Jobs from '../Jobs'
-import { Provider } from 'react-redux'
-import configureStore from '../../configureStore'
-
-const store = configureStore()
+import {  fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/jobListing'
+import Picker from '../Common/Picker'
+import Jobs from './Jobs'
 
 class JobListingApp extends Component {
 
   constructor(props) {
     super(props)
+    this.selectedListingTab = 'all';
     this.fetchJobsOfType = this.fetchJobsOfType.bind(this);
+    this.loadJobsPerPage = this.loadJobsPerPage.bind(this);
   }
 
   componentDidMount() {
@@ -31,6 +28,11 @@ class JobListingApp extends Component {
   fetchJobsOfType(e) {
     e.preventDefault()
     let jobType = e.target.dataset.type;
+    if(typeof jobType === "undefined") {
+      jobType = this.selectedListingTab ? this.selectedListingTab : 'all';
+    } else {
+      this.selectedListingTab = jobType;
+    }
     const { dispatch } = this.props;
     dispatch(invalidateJobListing(jobType));
     dispatch(fetchJobsIfNeeded(jobType));
@@ -40,8 +42,30 @@ class JobListingApp extends Component {
     console.log(123);
   }
 
+  loadUserJobs(user) {
+    console.log(123);
+   /* const { dispatch } = this.props;
+    dispatch(reloadJobListing(user));*/
+  }
+  
+  loadJobsPerPage(jobShowCount) {
+    const { dispatch } = this.props;
+    var criteria = {};
+    criteria.jobsPerPage = jobShowCount;
+    criteria.selectedJobType = this.selectedSaveJobsTab;
+    dispatch(reloadJobListing(criteria));
+  }
+
   render() {
-    const { selectedJobType, jobs, isFetching, lastUpdated } = this.props
+    const { jobs, isFetching, lastUpdated, criteria } = this.props;
+    let jobsPerPage;
+    if(typeof criteria === "undefined") {
+      jobsPerPage = 20;
+    } else {
+      jobsPerPage = criteria.criteria.jobsPerPage;
+    }
+    let selectedUser;
+
     return (
       <div> 
         <div className="opLinks">
@@ -73,9 +97,9 @@ class JobListingApp extends Component {
           <input type="button" value="Unshare" onClick={this.operation.bind(null)} />
           <input type="button" value="Remove" onClick={this.operation.bind(null)} />
           <input type="button" value="Invite Referrals" onClick={this.operation.bind(null)} />
-          <strong className="ml50">Posted By </strong> <Picker onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
+          <strong className="ml50">Posted By </strong> <Picker value={selectedUser} onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
           <strong className="ml15">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
-          <strong className="ml15">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+          <strong className="ml15">Show </strong> <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
         </p>        
         <p>
           {lastUpdated &&
@@ -85,19 +109,19 @@ class JobListingApp extends Component {
             </span>
           }
           {!isFetching &&
-            <a href='#' data-type="all"
+            <a href='#'
                onClick={this.fetchJobsOfType.bind(null)}>
               Refresh
             </a>
           }
         </p>
-        {isFetching && jobs.length === 0 &&          
+        {isFetching && typeof jobs === "undefined" &&          
           <div className="jobListLoading"></div>
         }
-        {!isFetching && jobs.length === 0 &&
+        {!isFetching && typeof jobs === "undefined" &&
           <h2>Empty.</h2>
         }
-        {jobs.length > 0 &&
+        {typeof jobs !== "undefined"&&
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
             <Jobs jobs={jobs} />
           </div>
@@ -132,7 +156,7 @@ function mapStateToProps(state) {
   const {
     isFetching,
     lastUpdated,
-    jobs: jobs
+    jobs
   } = jobsByJoblisting[selectedJobType] || {
     isFetching: true,
     jobs: []
