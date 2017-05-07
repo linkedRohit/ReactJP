@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {  fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/jobListing'
+import { updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/jobListing'
 import Picker from '../Common/Picker'
 import Jobs from './Jobs'
 
@@ -9,12 +9,15 @@ class JobListingApp extends Component {
   constructor(props) {
     super(props)
     this.selectedListingTab = 'all';
+    this.criteria = this.props.criteria;
     this.fetchJobsOfType = this.fetchJobsOfType.bind(this);
     this.loadJobsPerPage = this.loadJobsPerPage.bind(this);
+    this.loadUserJobs = this.loadUserJobs.bind(this);
   }
 
   componentDidMount() {
-    const { dispatch, selectedJobType } = this.props;
+    const { dispatch, selectedJobType, criteria } = this.props;
+    dispatch(updateCriteria(criteria));
     dispatch(fetchJobsIfNeeded(selectedJobType));
   }
 
@@ -33,7 +36,10 @@ class JobListingApp extends Component {
     } else {
       this.selectedListingTab = jobType;
     }
-    const { dispatch } = this.props;
+    const { dispatch, criteria } = this.props;
+    criteria.jobType = jobType;
+    dispatch(updateCriteria(criteria));
+    dispatch(selectedJobType(jobType));
     dispatch(invalidateJobListing(jobType));
     dispatch(fetchJobsIfNeeded(jobType));
   }
@@ -43,28 +49,28 @@ class JobListingApp extends Component {
   }
 
   loadUserJobs(user) {
-    console.log(123);
-   /* const { dispatch } = this.props;
-    dispatch(reloadJobListing(user));*/
+    const { criteria } = this.props;
+    criteria.userFilter = user;
+    this.updateJobListingView(criteria);
   }
   
   loadJobsPerPage(jobShowCount) {
-    const { dispatch } = this.props;
-    var criteria = {};
+    const { criteria } = this.props;
     criteria.jobsPerPage = jobShowCount;
-    criteria.selectedJobType = this.selectedSaveJobsTab;
+    this.updateJobListingView(criteria);
+  }
+
+  updateJobListingView(criteria) {
+    const { dispatch } = this.props;
+    dispatch(updateCriteria(criteria));
     dispatch(reloadJobListing(criteria));
   }
 
   render() {
     const { jobs, isFetching, lastUpdated, criteria } = this.props;
-    let jobsPerPage;
-    if(typeof criteria === "undefined") {
-      jobsPerPage = 20;
-    } else {
-      jobsPerPage = criteria.criteria.jobsPerPage;
-    }
-    let selectedUser;
+    let selectedUser, jobsPerPage;
+    this.criteria = criteria;
+    jobsPerPage = typeof criteria !== "undefined" ? criteria.jobsPerPage : '';
 
     return (
       <div> 
@@ -135,7 +141,7 @@ class JobListingApp extends Component {
           <input type="button" value="Invite Referrals" onClick={this.operation.bind(null)} />
           <strong className="ml50">Posted By </strong> <Picker onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
           <strong className="ml15">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
-          <strong className="ml15">Show </strong> <Picker onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+          <strong className="ml15">Show </strong> <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
         </p>
       </div>
     )

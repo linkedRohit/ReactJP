@@ -9,7 +9,6 @@ import 'react-tab-panel/index.css' //for the default look
 class JobListing extends Component {
 	constructor(props) {
 	    super(props);
-	    console.log(this.props,8129381973128937128);
 	}
 
 	render() {
@@ -38,7 +37,7 @@ class JobListing extends Component {
 			            }
 			          }>
 		            <div tabTitle="Jobs and Responses" id="JobsAndResponses">
-		                <JobListingApp />
+		                <JobListingApp criteria = {this.props.criteria}/>
 		            </div> 
 		            <div tabTitle="Saved Jobs" id="SavedJobs">
 		                <SaveJobsListingApp criteria={this.props.criteria}/>

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { fetchJobsIfNeeded, invalidateJobListing, reloadJobListing} from '../../actions/jobListing'
+import { updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing} from '../../actions/jobListing'
 import Picker from '../Common/Picker'
 import Jobs from './Jobs'
 
@@ -13,7 +13,8 @@ class SaveJobsListingApp extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, selectedJobType } = this.props;
+    const { dispatch, selectedJobType, criteria } = this.props;
+    dispatch(updateCriteria(criteria))
     dispatch(fetchJobsIfNeeded(selectedJobType));
   }
 
@@ -33,6 +34,7 @@ class SaveJobsListingApp extends Component {
       this.selectedSaveJobsTab = jobType;
     }
     const { dispatch } = this.props;
+    dispatch(selectedJobType(jobType));
     dispatch(invalidateJobListing(jobType));
     dispatch(fetchJobsIfNeeded(jobType));
   }
@@ -45,19 +47,14 @@ class SaveJobsListingApp extends Component {
     const { dispatch } = this.props;
     var criteria = {};
     criteria.jobsPerPage = jobShowCount;
-    criteria.selectedJobType = this.selectedSaveJobsTab;
+    criteria.jobType = this.selectedSaveJobsTab;
+    dispatch(updateCriteria(criteria));
     dispatch(reloadJobListing(criteria));
   }
 
   render() {
     const { jobs, isFetching, lastUpdated, criteria } = this.props;
-    let jobsPerPage;
-    if(typeof criteria.criteria === "undefined") {
-      jobsPerPage = 20;
-    } else {
-      jobsPerPage = criteria.criteria.jobsPerPage;
-    }
-    
+    console.log(this.props,12309);    
     return (
       <div>        
       	<div className="opLinks">
@@ -75,7 +72,7 @@ class SaveJobsListingApp extends Component {
           <input type="button" value="Delete" onClick={this.operation.bind(null)} />
           <span className="disIn fr">
             <strong className="numPagesSection">Show </strong>
-            <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+            <Picker value={criteria.jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
           </span>
         </p> 	
         <p>
@@ -92,13 +89,13 @@ class SaveJobsListingApp extends Component {
             </a>
           }
         </p>
-        {isFetching && jobs.length === 0 &&
-          <h2>Loading...</h2>
+        {isFetching && typeof jobs === "undefined" &&          
+          <div className="jobListLoading"></div>
         }
-        {!isFetching && jobs.length === 0 &&
+        {!isFetching && typeof jobs === "undefined" &&
           <h2>Empty.</h2>
         }
-        {jobs.length > 0 &&
+        {typeof jobs !== "undefined"&&
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
             <Jobs jobs={jobs} />
           </div>
@@ -108,7 +105,7 @@ class SaveJobsListingApp extends Component {
           <input type="button" value="Delete" onClick={this.operation.bind(null)} />
           <span className="disIn fr">
             <strong className="numPagesSection">Show </strong>
-            <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+            <Picker value={criteria.jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
           </span>
         </p>  
       </div>

@@ -14,17 +14,17 @@ const DEFAULT_PAGE_INDEX = 1;
 const DEFAULT_SELECTED_USER = 'ALL';
 const DEFAULT_JOB_STATUS = 'ALL';
 
-export function selectJobType(selectedJobType) {
+export function selectedJobType(jobType) {
   return {
     type: SELECT_JOBLISTING,
-    selectedJobType
+    jobType
   }
 }
 
-export function invalidateJobListing(selectedJobType) {
+export function invalidateJobListing(jobType) {
   return {
     type: INVALIDATE_JOBLISTING,
-    selectedJobType
+    jobType
   }
 }
 
@@ -35,20 +35,27 @@ export function jobFetchError(bool) {
   }
 }
 
-function requestJobs(selectedJobType) {
+function requestJobs(jobType) {
   return {
     type: REQUEST_JOBS,
-    selectedJobType
+    jobType
   }
 }
 
-function receiveJobs(selectedJobType, jobs) {
-  //selectedJobType = typeof selectedJobType == "undefined" ? "all" : selectedJobType;
+export function updateCriteria(criteria) {
+  return {
+    type: UPDATE_CRITERIA,
+    criteria
+  }
+}
+
+function receiveJobs(jobType, jobs) {
+  //jobType = typeof jobType == "undefined" ? "all" : jobType;
   return {
     type: RECEIVE_JOBS,
-    selectedJobType,
+    jobType,
     jobs: jobs.data.children.map(child => child.data),
-    receivedAt: Date.now()
+    receivedAt: Date.now()    
   }
 }
 
@@ -59,21 +66,11 @@ export function toggleTab (index) {
   }
 }
 
-function updateScopeOfListing(selectedJobType, jobs, criteria) {
-  return {
-    type: UPDATE_CRITERIA,
-    selectedJobType,
-    jobs: jobs.data.children.map(child => child.data),
-    receivedAt: Date.now(),
-    criteria: [criteria]
-  }
-}
-
-function fetchJobs(selectedJobType) {
-  selectedJobType = selectedJobType ? selectedJobType : 'all';
+function fetchJobs(jobType) {
+  jobType = jobType ? jobType : 'all';
   return dispatch => {
-    dispatch(requestJobs(selectedJobType))
-    return fetch(`https://www.reddit.com/r/${selectedJobType}.json`)
+    dispatch(requestJobs(jobType))
+    return fetch(`https://www.reddit.com/r/${jobType}.json`)
       .then((response) => {
         if (!response.ok) {
           throw Error(response.statusText);
@@ -81,13 +78,13 @@ function fetchJobs(selectedJobType) {
         return response;       
       })
       .then((response)=> response.json())
-      .then(jobs => dispatch(receiveJobs(selectedJobType, jobs)))
+      .then(jobs => dispatch(receiveJobs(jobType, jobs)))
       .catch((e) => dispatch(jobFetchError(e)));
   }
 }
 
-function shouldFetchJobs(state, selectedJobType) {
-  const jobs = state.jobsByJoblisting[selectedJobType]
+function shouldFetchJobs(state, jobType) {
+  const jobs = state.jobsByJoblisting[jobType]
   if (!jobs) {
     return true
   } else if (jobs.isFetching) {
@@ -97,10 +94,10 @@ function shouldFetchJobs(state, selectedJobType) {
   }
 }
 
-export function fetchJobsIfNeeded(selectedJobType) {
+export function fetchJobsIfNeeded(jobType) {
   return (dispatch, getState) => {
-    if (shouldFetchJobs(getState(), selectedJobType)) {
-      return dispatch(fetchJobs(selectedJobType))
+    if (shouldFetchJobs(getState(), jobType)) {
+      return dispatch(fetchJobs(jobType))
     }
   }
 }
@@ -112,20 +109,13 @@ export function reloadJobListing(criteria) {
 }
 
 function reloadListing(criteria) {
-  //console.log(criteria);
-  let selectedJobType = criteria.selectedJobType ? criteria.selectedJobType : 'all';
-  let pageIndex = criteria.page ? criteria.page : DEFAULT_PAGE_INDEX;
-  let jobsPerPage = criteria.jobsPerPage ? criteria.jobsPerPage : DEFAULT_JOB_COUNT;
-  let userFilter = criteria.userFilter ? criteria.userFilter : DEFAULT_SELECTED_USER;
-  let jobStatusFilter = criteria.jobStatusFilter ? criteria.jobStatusFilter : DEFAULT_JOB_STATUS;
-
   let jobListingAPIUrl = `https://www.reddit.com/r/`;
-  let jobListingAPIResourceUrl = jobListingAPIUrl + (selectedJobType ? selectedJobType : 'all') + '.json';
+  let jobListingAPIResourceUrl = jobListingAPIUrl + (criteria.jobType) + '.json';
 
-  jobListingAPIResourceUrl += '?after=t3_68voeh&p=' + pageIndex + '&jobsPerPage=' + jobsPerPage + '&userFilter=' + userFilter + '&jobStatusFilter=' + jobStatusFilter;
+  jobListingAPIResourceUrl += '?p=' + criteria.pageIndex + '&jobsPerPage=' + criteria.jobsPerPage + '&userFilter=' + criteria.userFilter + '&jobStatusFilter=' + criteria.jobStatusFilter;
 
   return dispatch => {
-    dispatch(requestJobs(selectedJobType))
+    dispatch(requestJobs(criteria.jobType))
     return fetch(jobListingAPIResourceUrl)
       .then((response) => {
         if (!response.ok) {
@@ -134,7 +124,7 @@ function reloadListing(criteria) {
         return response;       
       })
       .then((response)=> response.json())
-      .then(jobs => dispatch(updateScopeOfListing(selectedJobType, jobs, criteria)))
+      .then(jobs => dispatch(receiveJobs(criteria.jobType, jobs, criteria)))
       .catch((e) => dispatch(jobFetchError(e)));
   }
 }

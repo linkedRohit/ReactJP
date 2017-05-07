@@ -9,31 +9,26 @@ const DEFAULT_JOB_COUNT = 20;
 const DEFAULT_PAGE_INDEX = 1;
 const DEFAULT_SELECTED_USER = 'ALL';
 const DEFAULT_JOB_STATUS = 'ALL';
+const DEFAULT_SORTING_ORDER = 'ASC';
+const DEFAULT_SORT_FIELD = 'postedBy';
 
+const INITIAL_CRITERIA = {'jobsPerPage':DEFAULT_JOB_COUNT, 'currentPage': DEFAULT_PAGE_INDEX, 'userFilter': DEFAULT_SELECTED_USER, 'jobStatusFilter': DEFAULT_JOB_STATUS, 'sortedOn': DEFAULT_SORT_FIELD, 'sortOrder': DEFAULT_SORTING_ORDER}
 
-function selectJobType(state='all', action) {
+function selectedJobType(state='all', action) {
   switch (action.type) {
   case SELECT_JOBLISTING:
-    return action.selectedJobType
+    return action.jobType
   default:
     return state
   }
 }
 
-const INITIAL_STATE = {
-  isFetching: false,
-  didInvalidate: false,
-  jobs: [],
-  selectedJobType: ALL,
-  criteria: [{'pageIndex':DEFAULT_PAGE_INDEX, 'jobsPerPage': DEFAULT_JOB_COUNT, 'userFilter': DEFAULT_SELECTED_USER, 'jobStatusFilter': DEFAULT_JOB_STATUS}]
-}
-
 function processJobListing(state = {
-  INITIAL_STATE
+//  INITIAL_STATE
 }, action) {
   let jobType;
-  if (typeof action.selectedJobType !== "undefined") {
-    jobType = action.selectedJobType
+  if (typeof action.jobType !== "undefined") {
+    jobType = action.jobType
   } else {
     jobType = ALL
   }
@@ -60,13 +55,9 @@ function processJobListing(state = {
         didInvalidate: false,
         jobs: action.jobs,
         lastUpdated: action.receivedAt,
-        selectJobType: jobType        
+        selectJobType: jobType
       });
       return newState;
-    case UPDATE_CRITERIA:
-      return Object.assign({}, state, {
-        criteria: action.criteria ? action.criteria[0] : INITIAL_STATE
-      });
     case JOB_FETCH_ERROR:
       return Object.assign({}, state, {
         hasErrored: action.hasErrored
@@ -83,11 +74,7 @@ function jobsByJoblisting(state = { }, action) {
     case RECEIVE_JOBS:
     case REQUEST_JOBS:
       return Object.assign({}, state, {
-        [action.selectJobType]: processJobListing(state[action.selectJobType], action)
-      })
-    case UPDATE_CRITERIA:
-      return Object.assign({}, state, {
-        [action.Criteria]: processJobListing(state[action.selectJobType], action)
+        [action.jobType]: processJobListing(state[action.jobType], action)      
       })
     case JOB_FETCH_ERROR:
       console.log(action.hasErrored);
@@ -97,13 +84,14 @@ function jobsByJoblisting(state = { }, action) {
   }
 }
 
-function Criteria(state = {}, action) {
+function updatedCriteria(state = {}, action) {
   switch (action.type) {
     case UPDATE_CRITERIA:
-      //return Object.assign({}, state, {
-        //[action.selectJobType]: processJobListing(state[action.criteria], action)
-      //})
-      return processJobListing(state, action)
+      console.log('UPDATE CRITERIA called', 123123);
+      return Object.assign({}, state, {
+        ['criteria']: action.criteria ? action.criteria : INITIAL_CRITERIA
+      })
+      //return processJobListing(state, action)
     default:
       return state;
   }
@@ -111,8 +99,8 @@ function Criteria(state = {}, action) {
 
 const jobListingReducer = combineReducers({
   jobsByJoblisting,
-  selectJobType,
-  Criteria
+  selectedJobType,
+  updatedCriteria
 })
 
 export default jobListingReducer

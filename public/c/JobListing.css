@@ -92,6 +92,7 @@
     background-repeat-x: no-repeat;
     height: 1000px;
     margin-left: 30px;
+    min-width: 800px;
 }
 
 .numPagesSection {
@@ -137,4 +138,9 @@
     margin-left: 10px;
     margin-right: 3px;
     text-indent: 0px;
+}
+
+.jobListingHeader div {
+    display: inline-block;
+    text-align: center;
 }

@@ -4,6 +4,12 @@ export default class Jobs extends Component {
   render() {
     return (
       <ul className="jobListingDiv">
+          <li className="jobListingHeader">
+            <div style={{width :"400px"}}><h3>Job Title</h3></div>
+            <div style={{ width: '200px'}}><h3>Posted By</h3></div>
+            <div style={{ width: '150px' }}><span><h3>Posted On</h3></span></div>
+            <div style={{ width: '50px' }}><span style={{width :"50px"}}><h3>Responses</h3></span></div>
+          </li>
         { this.renderJobTuples(this.props.jobs) }    
       </ul>
     )

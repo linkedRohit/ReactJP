@@ -5,34 +5,35 @@ import { updateScopeOfListing, toggleTab } from '../../actions/jobListing'
 
 //This is a Container component
 class JobListingContainer extends Component {
-   render() {
-      //const { criteria, errors } = this.props;
-      const { criteria } = this.props;
+    constructor(props) {
+      super(props);
+    }
 
+    render() {
       //Component part
       return (
          <div>
             {/*<ErrorList errors={errors} />*/}
-            <JobListing criteria={criteria} toggleTab={toggleTab}/>
+            <JobListing criteria = {this.props.criteria} toggleTab={toggleTab}/>
          </div>
       )
-   }
+    }
 }
 
 //Container part
 const mapDispatchToProps = (dispatch) => {
-    return {
-        Criteria: (params) => {dispatch(updateScopeOfListing())},
+    return {        
         toggleTab: (index) => {dispatch(toggleTab)}
     }
 };
 
 const mapStateToProps = (state) => {
-   return {
+   return {/*
        jobType: state.selectJobType,
        errors: state.errors,
-       criteria: state.Criteria,
-       tab: state.tab
+       criteria: state.updatedCriteria.criteria,
+       tab: state.tab*/
+       criteria: state.updatedCriteria.criteria
    };
 };
 
