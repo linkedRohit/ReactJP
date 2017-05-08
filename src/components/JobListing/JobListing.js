@@ -12,42 +12,35 @@ class JobListing extends Component {
 	}
 
 	render() {
-		const { tab } = this.props;
+		const { selectedTab, toggleTab } = this.props;
 		return (
 			<div>
-			<div className="jobListing fl">
-		        <button className='postJobBtn'><b>Post Jobs</b></button>
-		        <TabPanel
-		          tabAlign="start"
-		          transition="true"
-		          onActivate={
-		            //this.refreshJobListing('soccer')
-			            (index) => {
-			            	//console.log('Tab ' + index + ' was activated!'),
-				            //this.props.activateSeletedTab(index)
-				            this.props.toggleTab(index)
-				        }
-			          } >
- 
-    			        <TabBody style={
-			            {
+				<div className="jobListing fl">
+			        <button className='postJobBtn'><b>Post Jobs</b></button>
+			        <TabPanel
+				        tabAlign="start"
+				        transition="true"
+				        onActivate={
+				            (index) => { let a = index ? 'meditation': 'all'; toggleTab(a) }
+				        } >
+	 
+				        <TabBody style={{
 				            padding: 10,
 				            overflow: 'hidden',
 				            maxWidth: 850
-			            }
-			          }>
-		            <div tabTitle="Jobs and Responses" id="JobsAndResponses">
-		                <JobListingApp criteria = {this.props.criteria}/>
-		            </div> 
-		            <div tabTitle="Saved Jobs" id="SavedJobs">
-		                <SaveJobsListingApp criteria={this.props.criteria}/>
-		            </div>
-		          </TabBody>
-		        </TabPanel>
-		    </div>
-		    <div id="searchMenu" className="searchMenu">
-		    	<ManageJobsAndResponsesSearch />
-		    </div>
+			            }}>
+			            <div tabTitle="Jobs and Responses" id="JobsAndResponses">
+			                <JobListingApp criteria = {this.props.criteria} />
+			            </div> 
+			            <div tabTitle="Saved Jobs" id="SavedJobs">
+			                <SaveJobsListingApp criteria={this.props.criteria}/>
+			            </div>
+			          </TabBody>
+			        </TabPanel>
+			    </div>
+			    <div id="searchMenu" className="searchMenu">
+			    	<ManageJobsAndResponsesSearch />
+			    </div>
 		    </div>
 		)
 	}

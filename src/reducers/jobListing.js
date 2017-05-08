@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
 import {
   SELECT_JOBLISTING, INVALIDATE_JOBLISTING,
-  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR, UPDATE_CRITERIA, TOGGLE_TAB
-} from '../actions/jobListing'
+  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR, UPDATE_CRITERIA
+} from '../actions/JobListing/jobListing'
 
 const ALL = 'all';
 const DEFAULT_JOB_COUNT = 20;
@@ -33,11 +33,6 @@ function processJobListing(state = {
     jobType = ALL
   }
   switch (action.type) {
-    case TOGGLE_TAB:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-        tab: action.payload ? 'savedJobs' : 'all'
-      })
     case INVALIDATE_JOBLISTING:
       return Object.assign({}, state, {
         didInvalidate: true,
@@ -69,7 +64,6 @@ function processJobListing(state = {
 
 function jobsByJoblisting(state = { }, action) {
   switch (action.type) {
-    case TOGGLE_TAB:
     case INVALIDATE_JOBLISTING:
     case RECEIVE_JOBS:
     case REQUEST_JOBS:
@@ -84,10 +78,9 @@ function jobsByJoblisting(state = { }, action) {
   }
 }
 
-function updatedCriteria(state = {}, action) {
+function updatedCriteria(state = { }, action) {
   switch (action.type) {
     case UPDATE_CRITERIA:
-      console.log('UPDATE CRITERIA called', 123123);
       return Object.assign({}, state, {
         ['criteria']: action.criteria ? action.criteria : INITIAL_CRITERIA
       })

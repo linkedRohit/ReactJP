@@ -140,6 +140,23 @@
     text-indent: 0px;
 }
 
+.jobListingHeader {
+    background: #efe9e9;
+}
+
+.jobListingHeader li {
+    list-style: none;
+}
+
+.jobListingHeader li h3 {
+    margin: 10px;
+}
+
+.jobListingHeader li a {
+    color: #0079d0;
+    text-decoration: none;
+}
+
 .jobListingHeader div {
     display: inline-block;
     text-align: center;

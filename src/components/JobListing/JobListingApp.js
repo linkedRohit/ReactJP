@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/jobListing'
+import { updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/JobListing/jobListing'
 import Picker from '../Common/Picker'
 import Jobs from './Jobs'
 
@@ -13,6 +13,7 @@ class JobListingApp extends Component {
     this.fetchJobsOfType = this.fetchJobsOfType.bind(this);
     this.loadJobsPerPage = this.loadJobsPerPage.bind(this);
     this.loadUserJobs = this.loadUserJobs.bind(this);
+    this.displayOptions = {'order':'DESC', 'showResponses':true};
   }
 
   componentDidMount() {
@@ -91,7 +92,7 @@ class JobListingApp extends Component {
             onClick={this.fetchJobsOfType}>
             CSM
           </a>
-          <a href='#' data-type="golf"
+          <a href='#' data-type="golf" style={{ border: 0 }}
             onClick={this.fetchJobsOfType}>
             Other Media Jobs
           </a>
@@ -129,9 +130,26 @@ class JobListingApp extends Component {
         }
         {typeof jobs !== "undefined"&&
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-            <Jobs jobs={jobs} />
+            <ul className="jobListingHeader">
+              <li>
+                <div style={{ width : '300px' }}><h3><a href="#">Job Title</a></h3></div>
+                <div style={{ width: '95px' }}></div>
+                <div style={{ width: '150px' }}><h3><a href="#">Posted By</a></h3></div>
+                <div style={{ width: '150px', margin: 2 }}><span><h3><a href="#">Posted On  
+                  <span className="ml5">
+                    {this.displayOptions.order == "ASC" && <img id="id_postdate_img" src="https://static.naukimg.com/rstatic/images/up.gif" alt="" width="9" height="14" align="absmiddle" />}
+                    {this.displayOptions.order == "DESC" && <img id="id_postdate_img" src="https://static.naukimg.com/rstatic/images/down.gif" alt="" width="9" height="14" align="absmiddle" />}
+                  </span></a></h3><span>[Next Refresh Date]</span></span></div>
+                <div style={{ width: '85px' }}>
+                <h3>Responses 
+                </h3>
+                </div>
+              </li>
+            </ul>
+            <Jobs jobs={jobs} displayOptions={this.displayOptions}/>
           </div>
         }  
+
         <p className="opButtons pt10 buDark">
           <input type="checkbox" name="jobId[]" value='all'/>
           <input type="button" value="Refresh" onClick={this.operation.bind(null)} />

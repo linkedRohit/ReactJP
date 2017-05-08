@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing} from '../../actions/jobListing'
+import { toggleTab, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing} from '../../actions/JobListing/jobListing'
 import Picker from '../Common/Picker'
 import Jobs from './Jobs'
 
@@ -10,6 +10,7 @@ class SaveJobsListingApp extends Component {
     this.selectedSaveJobsTab = 'all';
     this.fetchJobsOfType = this.fetchJobsOfType.bind(this);
     this.loadJobsPerPage = this.loadJobsPerPage.bind(this);
+    this.displayOptions = {'order':'DESC', 'showResponses':false};
   }
 
   componentDidMount() {
@@ -54,7 +55,6 @@ class SaveJobsListingApp extends Component {
 
   render() {
     const { jobs, isFetching, lastUpdated, criteria } = this.props;
-    console.log(this.props,12309);    
     return (
       <div>        
       	<div className="opLinks">
@@ -97,7 +97,22 @@ class SaveJobsListingApp extends Component {
         }
         {typeof jobs !== "undefined"&&
           <div style={{ opacity: isFetching ? 0.5 : 1 }}>
-            <Jobs jobs={jobs} />
+            <ul className="jobListingHeader">
+              <li>
+                <div style={{ width : '350px' }}><h3><a href="#">Job Title</a></h3></div>
+                <div style={{ width: '125px' }}><h3></h3></div>
+                <div style={{ width: '150px' }}><h3>Saved By</h3></div>
+                <div style={{ width: '140px' }}>
+                  <h3><a href="#">Saved On </a>
+                    <span className="ml5">
+                      {this.displayOptions.order == "ASC" && <img id="id_postdate_img" src="https://static.naukimg.com/rstatic/images/up.gif" alt="" width="9" height="14" align="absmiddle" />}
+                      {this.displayOptions.order == "DESC" && <img id="id_postdate_img" src="https://static.naukimg.com/rstatic/images/down.gif" alt="" width="9" height="14" align="absmiddle" />}
+                    </span>
+                  </h3>
+                </div>
+              </li>
+            </ul>
+            <Jobs jobs={jobs} displayOptions={this.displayOptions} />
           </div>
         }  
         <p className="opButtons pb10 bbDark">

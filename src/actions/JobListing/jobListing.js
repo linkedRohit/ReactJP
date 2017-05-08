@@ -21,6 +21,13 @@ export function selectedJobType(jobType) {
   }
 }
 
+export function toggleTab (selectedTab) {
+  return {
+    type: TOGGLE_TAB,
+    selectedTab
+  }
+}
+
 export function invalidateJobListing(jobType) {
   return {
     type: INVALIDATE_JOBLISTING,
@@ -56,13 +63,6 @@ function receiveJobs(jobType, jobs) {
     jobType,
     jobs: jobs.data.children.map(child => child.data),
     receivedAt: Date.now()    
-  }
-}
-
-export function toggleTab (index) {
-  return {
-    type: TOGGLE_TAB,
-    paload: index ? 'savedJobs' : 'all'
   }
 }
 
@@ -110,12 +110,13 @@ export function reloadJobListing(criteria) {
 
 function reloadListing(criteria) {
   let jobListingAPIUrl = `https://www.reddit.com/r/`;
-  let jobListingAPIResourceUrl = jobListingAPIUrl + (criteria.jobType) + '.json';
+  let jobType = criteria.jobType ? criteria.jobType : 'all';
+  let jobListingAPIResourceUrl = jobListingAPIUrl + (jobType) + '.json';
 
   jobListingAPIResourceUrl += '?p=' + criteria.pageIndex + '&jobsPerPage=' + criteria.jobsPerPage + '&userFilter=' + criteria.userFilter + '&jobStatusFilter=' + criteria.jobStatusFilter;
 
   return dispatch => {
-    dispatch(requestJobs(criteria.jobType))
+    dispatch(requestJobs(jobType))
     return fetch(jobListingAPIResourceUrl)
       .then((response) => {
         if (!response.ok) {
@@ -124,7 +125,7 @@ function reloadListing(criteria) {
         return response;       
       })
       .then((response)=> response.json())
-      .then(jobs => dispatch(receiveJobs(criteria.jobType, jobs, criteria)))
+      .then(jobs => dispatch(receiveJobs(jobType, jobs, criteria)))
       .catch((e) => dispatch(jobFetchError(e)));
   }
 }

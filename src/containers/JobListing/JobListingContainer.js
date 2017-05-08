@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import JobListing from '../../components/JobListing/JobListing'
-import { updateScopeOfListing, toggleTab } from '../../actions/jobListing'
+import { selectedJobType } from '../../actions/JobListing/jobListing'
 
 //This is a Container component
 class JobListingContainer extends Component {
@@ -14,7 +14,7 @@ class JobListingContainer extends Component {
       return (
          <div>
             {/*<ErrorList errors={errors} />*/}
-            <JobListing criteria = {this.props.criteria} toggleTab={toggleTab}/>
+            <JobListing criteria = {this.props.criteria} toggleTab={this.props.toggleTab}/>
          </div>
       )
     }
@@ -22,9 +22,9 @@ class JobListingContainer extends Component {
 
 //Container part
 const mapDispatchToProps = (dispatch) => {
-    return {        
-        toggleTab: (index) => {dispatch(toggleTab)}
-    }
+    return ({
+        toggleTab: (index) => {dispatch(selectedJobType(index))}
+    })
 };
 
 const mapStateToProps = (state) => {
