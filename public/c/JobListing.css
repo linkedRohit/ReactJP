@@ -148,10 +148,6 @@
     list-style: none;
 }
 
-.jobListingHeader li h3 {
-    margin: 10px;
-}
-
 .jobListingHeader li a {
     color: #0079d0;
     text-decoration: none;

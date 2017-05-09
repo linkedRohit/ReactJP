@@ -12,7 +12,14 @@ const DEFAULT_JOB_STATUS = 'ALL';
 const DEFAULT_SORTING_ORDER = 'ASC';
 const DEFAULT_SORT_FIELD = 'postedBy';
 
-const INITIAL_CRITERIA = {'jobsPerPage':DEFAULT_JOB_COUNT, 'currentPage': DEFAULT_PAGE_INDEX, 'userFilter': DEFAULT_SELECTED_USER, 'jobStatusFilter': DEFAULT_JOB_STATUS, 'sortedOn': DEFAULT_SORT_FIELD, 'sortOrder': DEFAULT_SORTING_ORDER}
+const INITIAL_CRITERIA = {
+  'jobsPerPage':DEFAULT_JOB_COUNT, 
+  'pageIndex': DEFAULT_PAGE_INDEX, 
+  'userFilter': DEFAULT_SELECTED_USER, 
+  'jobStatusFilter': DEFAULT_JOB_STATUS, 
+  'sortedOn': DEFAULT_SORT_FIELD, 
+  'sortOrder': DEFAULT_SORTING_ORDER
+}
 
 function selectedJobType(state='all', action) {
   switch (action.type) {
@@ -78,7 +85,7 @@ function jobsByJoblisting(state = { }, action) {
   }
 }
 
-function updatedCriteria(state = { }, action) {
+function updatedCriteria(state = { 'criteria': INITIAL_CRITERIA }, action) {
   switch (action.type) {
     case UPDATE_CRITERIA:
       return Object.assign({}, state, {

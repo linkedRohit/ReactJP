@@ -18,7 +18,7 @@ class JobListingApp extends Component {
 
   componentDidMount() {
     const { dispatch, selectedJobType, criteria } = this.props;
-    dispatch(updateCriteria(criteria));
+    //dispatch(updateCriteria(criteria));
     dispatch(fetchJobsIfNeeded(selectedJobType));
   }
 
@@ -135,7 +135,7 @@ class JobListingApp extends Component {
                 <div style={{ width : '300px' }}><h3><a href="#">Job Title</a></h3></div>
                 <div style={{ width: '95px' }}></div>
                 <div style={{ width: '150px' }}><h3><a href="#">Posted By</a></h3></div>
-                <div style={{ width: '150px', margin: 2 }}><span><h3><a href="#">Posted On  
+                <div style={{ width: '150px', margin: 2 }}><span><h3 style={{ marginBottom: 1}}><a href="#">Posted On  
                   <span className="ml5">
                     {this.displayOptions.order == "ASC" && <img id="id_postdate_img" src="https://static.naukimg.com/rstatic/images/up.gif" alt="" width="9" height="14" align="absmiddle" />}
                     {this.displayOptions.order == "DESC" && <img id="id_postdate_img" src="https://static.naukimg.com/rstatic/images/down.gif" alt="" width="9" height="14" align="absmiddle" />}

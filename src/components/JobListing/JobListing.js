@@ -3,16 +3,19 @@ import TabPanel, { TabBody } from 'react-tab-panel'
 import JobListingApp from './JobListingApp'
 import SaveJobsListingApp from './SaveJobsListingApp'
 import ManageJobsAndResponsesSearch from './ManageJobsAndResponsesSearch'
+import Pagination from 'react-js-pagination'
+
 
 import 'react-tab-panel/index.css' //for the default look
 
 class JobListing extends Component {
 	constructor(props) {
-	    super(props);
+	    super(props);	    
 	}
 
 	render() {
-		const { selectedTab, toggleTab } = this.props;
+		const { toggleTab, loadPage } = this.props;
+		console.log(this.props.criteria,981293812);
 		return (
 			<div>
 				<div className="jobListing fl">
@@ -34,13 +37,19 @@ class JobListing extends Component {
 			            </div> 
 			            <div tabTitle="Saved Jobs" id="SavedJobs">
 			                <SaveJobsListingApp criteria={this.props.criteria}/>
-			            </div>
+			            </div>			            
 			          </TabBody>
 			        </TabPanel>
 			    </div>
 			    <div id="searchMenu" className="searchMenu">
 			    	<ManageJobsAndResponsesSearch />
 			    </div>
+			    <Pagination prevPageText='Previous' nextPageText='Next' firstPageText='First' lastPageText='Last'
+      				pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={1000}
+      				onChange={
+      					(index) => { var a = index ? index : 1; loadPage(a) }
+      				} />
+			    
 		    </div>
 		)
 	}

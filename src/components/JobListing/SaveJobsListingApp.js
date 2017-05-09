@@ -15,7 +15,7 @@ class SaveJobsListingApp extends Component {
 
   componentDidMount() {
     const { dispatch, selectedJobType, criteria } = this.props;
-    dispatch(updateCriteria(criteria))
+    //dispatch(updateCriteria(criteria))
     dispatch(fetchJobsIfNeeded(selectedJobType));
   }
 

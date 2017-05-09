@@ -28,6 +28,18 @@ export function toggleTab (selectedTab) {
   }
 }
 
+export function loadPage (selectedPage) {  
+  return (dispatch, getState) => {
+    let criteria = getState().updatedCriteria.criteria;
+    if(criteria.pageIndex != selectedPage) {
+      criteria.pageIndex = selectedPage ? selectedPage : 1;
+      if (dispatch(updateCriteria(criteria))) {      
+        return dispatch(reloadListing(criteria, getState().selectedJobType))
+      }
+    }
+  }
+}
+
 export function invalidateJobListing(jobType) {
   return {
     type: INVALIDATE_JOBLISTING,
@@ -96,25 +108,28 @@ function shouldFetchJobs(state, jobType) {
 
 export function fetchJobsIfNeeded(jobType) {
   return (dispatch, getState) => {
-    if (shouldFetchJobs(getState(), jobType)) {
-      return dispatch(fetchJobs(jobType))
+    if (shouldFetchJobs(getState(), jobType)) {      
+      return dispatch(reloadListing(getState().updatedCriteria.criteria, jobType))
     }
   }
 }
 
 export function reloadJobListing(criteria) {
   return (dispatch, getState) => {
-    return dispatch(reloadListing(criteria));
+    return dispatch(reloadListing(criteria, getState().selectedJobType));
   }
 }
 
-function reloadListing(criteria) {
+function reloadListing(criteria, jobTypeParam='all') {
   let jobListingAPIUrl = `https://www.reddit.com/r/`;
-  let jobType = criteria.jobType ? criteria.jobType : 'all';
+  let jobType = jobTypeParam;//criteria.jobType ? criteria.jobType : 'all';
   let jobListingAPIResourceUrl = jobListingAPIUrl + (jobType) + '.json';
 
-  jobListingAPIResourceUrl += '?p=' + criteria.pageIndex + '&jobsPerPage=' + criteria.jobsPerPage + '&userFilter=' + criteria.userFilter + '&jobStatusFilter=' + criteria.jobStatusFilter;
-
+  jobListingAPIResourceUrl += '?p=' + criteria.pageIndex + '&jobsPerPage=' + criteria.jobsPerPage;
+  if(['meditation','fnf'].indexOf(jobTypeParam) < 0) {
+    jobListingAPIResourceUrl += '&userFilter=' + criteria.userFilter + '&jobStatusFilter=' + criteria.jobStatusFilter;
+  }
+  jobListingAPIResourceUrl += '&sortedOn=' + criteria.sortedOn + '&sortOrder=' + criteria.sortedOn;
   return dispatch => {
     dispatch(requestJobs(jobType))
     return fetch(jobListingAPIResourceUrl)
