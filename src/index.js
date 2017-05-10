@@ -7,7 +7,8 @@ import JobListingContainer from './containers/JobListing/JobListingContainer'
 import { Provider } from 'react-redux'
 import configureStore from './configureStore'
 
-const store = configureStore()
+const initialState = window.__INITIAL_STATE__;
+const store = configureStore(initialState);
 
 render(
   <Provider store={store}>

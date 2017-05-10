@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux'
 import {
   SELECT_JOBLISTING, INVALIDATE_JOBLISTING,
-  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR, UPDATE_CRITERIA
+  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR, UPDATE_CRITERIA, TOGGLE_TAB
 } from '../actions/JobListing/jobListing'
+import {reducer as toastrReducer} from 'react-redux-toastr'
 
+const NOTIFY_USER = 'NOTIFY_USER'
 const ALL = 'all';
 const DEFAULT_JOB_COUNT = 20;
 const DEFAULT_PAGE_INDEX = 1;
@@ -25,6 +27,12 @@ function selectedJobType(state='all', action) {
   switch (action.type) {
   case SELECT_JOBLISTING:
     return action.jobType
+  case TOGGLE_TAB:
+    let criteria = action.criteria ? action.criteria : INITIAL_CRITERIA;
+    criteria.pageIndex = 1;
+    return Object.assign({}, state, {
+      ['criteria']: criteria
+    });
   default:
     return state
   }
@@ -75,7 +83,8 @@ function jobsByJoblisting(state = { }, action) {
     case RECEIVE_JOBS:
     case REQUEST_JOBS:
       return Object.assign({}, state, {
-        [action.jobType]: processJobListing(state[action.jobType], action)      
+        [action.jobType]: processJobListing(state[action.jobType], action),
+        ['notifyUser']: {notifyType:'success',notifyHeader:'Job Load is Successful',notifyMessage:'The job has been loader'}      
       })
     case JOB_FETCH_ERROR:
       console.log(action.hasErrored);
@@ -97,10 +106,23 @@ function updatedCriteria(state = { 'criteria': INITIAL_CRITERIA }, action) {
   }
 }
 
+function toaster(state = { 'notifyUser': {'notifyType': 'success', 'notifyHeader': 'Title', 'notifyMessage': 'Message'} }, action) {
+  switch (action.type) {
+    case NOTIFY_USER:
+      return Object.assign({}, state, {
+        ['notifyUser']: action.notifyUser ? action.notifyUser : INITIAL_CRITERIA
+      })
+      //return processJobListing(state, action)
+    default:
+      return state;
+  }
+} 
+
 const jobListingReducer = combineReducers({
   jobsByJoblisting,
   selectedJobType,
-  updatedCriteria
+  updatedCriteria,
+  toaster
 })
 
 export default jobListingReducer

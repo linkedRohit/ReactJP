@@ -3,8 +3,7 @@ import TabPanel, { TabBody } from 'react-tab-panel'
 import JobListingApp from './JobListingApp'
 import SaveJobsListingApp from './SaveJobsListingApp'
 import ManageJobsAndResponsesSearch from './ManageJobsAndResponsesSearch'
-import Pagination from 'react-js-pagination'
-
+import {toastr} from 'react-redux-toastr'
 
 import 'react-tab-panel/index.css' //for the default look
 
@@ -14,12 +13,14 @@ class JobListing extends Component {
 	}
 
 	render() {
-		const { toggleTab, loadPage } = this.props;
-		console.log(this.props.criteria,981293812);
+		const { toggleTab } = this.props;
 		return (
 			<div>
 				<div className="jobListing fl">
 			        <button className='postJobBtn'><b>Post Jobs</b></button>
+			        <button
+          onClick={() => console.log('clicked'), toastr.success('The title', 'The message')}
+          type="button">Toastr Success</button>
 			        <TabPanel
 				        tabAlign="start"
 				        transition="true"
@@ -33,10 +34,10 @@ class JobListing extends Component {
 				            maxWidth: 850
 			            }}>
 			            <div tabTitle="Jobs and Responses" id="JobsAndResponses">
-			                <JobListingApp criteria = {this.props.criteria} />
+			                <JobListingApp criteria={this.props.criteria} loadPage={this.props.loadPage} />
 			            </div> 
 			            <div tabTitle="Saved Jobs" id="SavedJobs">
-			                <SaveJobsListingApp criteria={this.props.criteria}/>
+			                <SaveJobsListingApp criteria={this.props.criteria} loadPage={this.props.loadPage}/>
 			            </div>			            
 			          </TabBody>
 			        </TabPanel>
@@ -44,12 +45,6 @@ class JobListing extends Component {
 			    <div id="searchMenu" className="searchMenu">
 			    	<ManageJobsAndResponsesSearch />
 			    </div>
-			    <Pagination prevPageText='Previous' nextPageText='Next' firstPageText='First' lastPageText='Last'
-      				pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={1000}
-      				onChange={
-      					(index) => { var a = index ? index : 1; loadPage(a) }
-      				} />
-			    
 		    </div>
 		)
 	}

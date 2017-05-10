@@ -14,7 +14,7 @@ const DEFAULT_PAGE_INDEX = 1;
 const DEFAULT_SELECTED_USER = 'ALL';
 const DEFAULT_JOB_STATUS = 'ALL';
 
-export function selectedJobType(jobType) {
+export function selectedJobType (jobType) {
   return {
     type: SELECT_JOBLISTING,
     jobType
@@ -22,9 +22,11 @@ export function selectedJobType(jobType) {
 }
 
 export function toggleTab (selectedTab) {
-  return {
-    type: TOGGLE_TAB,
-    selectedTab
+  return (dispatch, getState) => {
+    let criteria = getState().updatedCriteria.criteria;
+    criteria.pageIndex = 1;
+    dispatch(updateCriteria(criteria));
+    return dispatch(selectedJobType(selectedTab));
   }
 }
 
@@ -69,7 +71,6 @@ export function updateCriteria(criteria) {
 }
 
 function receiveJobs(jobType, jobs) {
-  //jobType = typeof jobType == "undefined" ? "all" : jobType;
   return {
     type: RECEIVE_JOBS,
     jobType,
@@ -124,7 +125,7 @@ function reloadListing(criteria, jobTypeParam='all') {
   let jobListingAPIUrl = `https://www.reddit.com/r/`;
   let jobType = jobTypeParam;//criteria.jobType ? criteria.jobType : 'all';
   let jobListingAPIResourceUrl = jobListingAPIUrl + (jobType) + '.json';
-
+console.log(jobType, 1231231);
   jobListingAPIResourceUrl += '?p=' + criteria.pageIndex + '&jobsPerPage=' + criteria.jobsPerPage;
   if(['meditation','fnf'].indexOf(jobTypeParam) < 0) {
     jobListingAPIResourceUrl += '&userFilter=' + criteria.userFilter + '&jobStatusFilter=' + criteria.jobStatusFilter;

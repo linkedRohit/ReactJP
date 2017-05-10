@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { toggleTab, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing} from '../../actions/JobListing/jobListing'
+import { loadPage, toggleTab, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing} from '../../actions/JobListing/jobListing'
 import Picker from '../Common/Picker'
 import Jobs from './Jobs'
+import Pagination from 'react-js-pagination'
 
 class SaveJobsListingApp extends Component {
   constructor(props) {
@@ -54,7 +55,7 @@ class SaveJobsListingApp extends Component {
   }
 
   render() {
-    const { jobs, isFetching, lastUpdated, criteria } = this.props;
+    const { jobs, isFetching, lastUpdated, criteria, loadPage } = this.props;
     return (
       <div>        
       	<div className="opLinks">
@@ -123,6 +124,12 @@ class SaveJobsListingApp extends Component {
             <Picker value={criteria.jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
           </span>
         </p>  
+
+        <Pagination prevPageText='Previous' nextPageText='Next' firstPageText='First' lastPageText='Last'
+              pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={1000}
+              onChange={
+                (index) => { var a = index ? index : 1; loadPage(a) }
+              } />
       </div>
     )
   }

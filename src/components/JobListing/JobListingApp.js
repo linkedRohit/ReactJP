@@ -1,8 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/JobListing/jobListing'
+import { loadPage, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/JobListing/jobListing'
 import Picker from '../Common/Picker'
 import Jobs from './Jobs'
+import Pagination from 'react-js-pagination'
 
 class JobListingApp extends Component {
 
@@ -68,7 +69,7 @@ class JobListingApp extends Component {
   }
 
   render() {
-    const { jobs, isFetching, lastUpdated, criteria } = this.props;
+    const { jobs, isFetching, lastUpdated, criteria, loadPage } = this.props;
     let selectedUser, jobsPerPage;
     this.criteria = criteria;
     jobsPerPage = typeof criteria !== "undefined" ? criteria.jobsPerPage : '';
@@ -161,6 +162,12 @@ class JobListingApp extends Component {
           <strong className="ml15">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
           <strong className="ml15">Show </strong> <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
         </p>
+
+          <Pagination prevPageText='Previous' nextPageText='Next' firstPageText='First' lastPageText='Last'
+              pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={1000}
+              onChange={
+                (index) => { var a = index ? index : 1; loadPage(a) }
+              } />
       </div>
     )
   }
