@@ -110,7 +110,7 @@
 }
 
 .searchForm input, select{
-    height: 23px;
+    height: 25px;
     border-radius: 3px;
     border: 1px solid #aaa;
     padding: 2px;
@@ -123,7 +123,7 @@
 
 .imgCalendar {
     height: 25px;
-    margin-bottom: -7px;
+    margin-bottom: -3px;
     margin-left: 5px;
 }
 
@@ -156,4 +156,16 @@
 .jobListingHeader div {
     display: inline-block;
     text-align: center;
+}
+
+.btnPrimary {
+    background: #2185cc;
+    color: white;
+    padding: 3px 30px;
+}
+
+.btnDefault {
+    background: #c3cfd8;
+    color: black;
+    padding: 0 8px;
 }

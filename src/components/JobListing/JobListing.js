@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import TabPanel, { TabBody } from 'react-tab-panel'
 import JobListingApp from './JobListingApp'
 import SaveJobsListingApp from './SaveJobsListingApp'
-import ManageJobsAndResponsesSearch from './ManageJobsAndResponsesSearch'
+//import ManageJobsAndResponsesSearch from './ManageJobsAndResponsesSearch'
+import SearchFormContainer from '../Search/SearchFormContainer'
 import 'react-tab-panel/index.css' //for the default look
 import Notifications from 'react-notification-system-redux';
 
@@ -40,7 +41,7 @@ class JobListing extends Component {
 			        </TabPanel>
 			    </div>
 			    <div id="searchMenu" className="searchMenu">
-			    	<ManageJobsAndResponsesSearch />
+			    	<SearchFormContainer />
 			    </div>
 		    </div>
 		)

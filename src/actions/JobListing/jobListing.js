@@ -1,5 +1,8 @@
 import fetch from 'isomorphic-fetch'
 
+const jobListingAPIUrl = `https://www.reddit.com/r/`;
+const jobListingSearchAPIUrl = `https://www.reddit.com/r/`;
+
 export const REQUEST_JOBS = 'REQUEST_JOBS'
 export const RECEIVE_JOBS = 'RECEIVE_JOBS'
 export const SELECT_JOBLISTING = 'SELECT_JOBLISTING'
@@ -9,10 +12,14 @@ export const UPDATE_JOB_TYPE = 'UPDATE_JOB_TYPE'
 export const UPDATE_CRITERIA = 'UPDATE_CRITERIA'
 export const TOGGLE_TAB = 'TOGGLE_TAB'
 
-const DEFAULT_JOB_COUNT = 20;
-const DEFAULT_PAGE_INDEX = 1;
-const DEFAULT_SELECTED_USER = 'ALL';
-const DEFAULT_JOB_STATUS = 'ALL';
+export const SEARCH = 'SEARCH';
+
+export function searchJob (searchCriteria) {
+  return {
+    type: SEARCH,
+    searchCriteria
+  }
+}
 
 export function selectedJobType (jobType) {
   return {
@@ -122,7 +129,6 @@ export function reloadJobListing(criteria) {
 }
 
 function reloadListing(criteria, jobTypeParam='all') {
-  let jobListingAPIUrl = `https://www.reddit.com/r/`;
   let jobType = jobTypeParam;//criteria.jobType ? criteria.jobType : 'all';
   let jobListingAPIResourceUrl = jobListingAPIUrl + (jobType) + '.json';
 console.log(jobType, 1231231);

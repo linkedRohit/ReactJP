@@ -19,7 +19,7 @@ class ManageJobsAndResponsesSearch extends Component {
         <div className="searchHeader">Search Jobs</div>
         <div className="searchForm">
           <label>Keywords</label>
-          <input type='text' name='keyword' placeholder='Title/Job Id/Job Ref No.' size='17' required/>
+          <input type='text' name='keyword' placeholder='Title/Job Id/Job Ref No.' size='17'/>
           <label>Search in</label>
           <select name="keywordType" id="srcIn" className="disBlock">
             <option value="position">Position</option>
