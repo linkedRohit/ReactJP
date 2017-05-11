@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import TabPanel, { TabBody } from 'react-tab-panel'
 import JobListingApp from './JobListingApp'
 import SaveJobsListingApp from './SaveJobsListingApp'
 import ManageJobsAndResponsesSearch from './ManageJobsAndResponsesSearch'
-import {toastr} from 'react-redux-toastr'
-
 import 'react-tab-panel/index.css' //for the default look
+import Notifications from 'react-notification-system-redux';
 
 class JobListing extends Component {
 	constructor(props) {
@@ -13,14 +12,12 @@ class JobListing extends Component {
 	}
 
 	render() {
-		const { toggleTab } = this.props;
+		const { toggleTab, notification } = this.props;
+		
 		return (
 			<div>
 				<div className="jobListing fl">
 			        <button className='postJobBtn'><b>Post Jobs</b></button>
-			        <button
-          onClick={() => console.log('clicked'), toastr.success('The title', 'The message')}
-          type="button">Toastr Success</button>
 			        <TabPanel
 				        tabAlign="start"
 				        transition="true"
@@ -34,10 +31,10 @@ class JobListing extends Component {
 				            maxWidth: 850
 			            }}>
 			            <div tabTitle="Jobs and Responses" id="JobsAndResponses">
-			                <JobListingApp criteria={this.props.criteria} loadPage={this.props.loadPage} />
+			                <JobListingApp criteria={this.props.criteria} loadPage={this.props.loadPage} notification={notification}/>
 			            </div> 
 			            <div tabTitle="Saved Jobs" id="SavedJobs">
-			                <SaveJobsListingApp criteria={this.props.criteria} loadPage={this.props.loadPage}/>
+			                <SaveJobsListingApp criteria={this.props.criteria} loadPage={this.props.loadPage} notification={notification}/>
 			            </div>			            
 			          </TabBody>
 			        </TabPanel>
@@ -49,4 +46,9 @@ class JobListing extends Component {
 		)
 	}
 }
+
+JobListing.propTypes = {
+	notifications: PropTypes.array
+}
+
 export default JobListing;

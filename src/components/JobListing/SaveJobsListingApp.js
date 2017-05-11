@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { loadPage, toggleTab, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing} from '../../actions/JobListing/jobListing'
-import Picker from '../Common/Picker'
+import { notifyUser } from '../../actions/Generic/NotificationActions'
+import Picker from '../Generic/Picker'
 import Jobs from './Jobs'
 import Pagination from 'react-js-pagination'
+import Notifications from 'react-notification-system-redux';
 
 class SaveJobsListingApp extends Component {
   constructor(props) {
@@ -48,16 +50,45 @@ class SaveJobsListingApp extends Component {
   loadJobsPerPage(jobShowCount) {
     const { dispatch } = this.props;
     var criteria = {};
-    criteria.jobsPerPage = jobShowCount;
+    console.log(jobShowCount,1231232);
+    criteria.jobsPerPage = parseInt(jobShowCount);
     criteria.jobType = this.selectedSaveJobsTab;
     dispatch(updateCriteria(criteria));
     dispatch(reloadJobListing(criteria));
+    dispatch(notifyUser(null));
   }
 
   render() {
-    const { jobs, isFetching, lastUpdated, criteria, loadPage } = this.props;
+    const { jobs, isFetching, lastUpdated, criteria, loadPage, notification } = this.props;
+    const style = {
+        NotificationItem: { // Override the notification item
+          DefaultStyle: { // Applied to every notification, regardless of the notification level
+            margin: '10px 5px 2px 1px'
+          },
+
+          success: { // Applied only to the success notification item
+            color: '#026102'
+          },
+
+          warning: {
+            color: 'orange'
+          },
+
+          error: {
+            color: 'red'
+          },
+
+          info: {
+            color: 'blue'
+          }
+        }
+      };
     return (
-      <div>        
+      <div>    
+          <Notifications
+              notifications={notification}
+              style={style}
+          />    
       	<div className="opLinks">
           <a href='#' data-type="productivity"
             onClick={this.fetchJobsOfType.bind(null)}>
@@ -126,7 +157,7 @@ class SaveJobsListingApp extends Component {
         </p>  
 
         <Pagination prevPageText='Previous' nextPageText='Next' firstPageText='First' lastPageText='Last'
-              pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={1000}
+              pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={100}
               onChange={
                 (index) => { var a = index ? index : 1; loadPage(a) }
               } />

@@ -1,9 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { loadPage, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/JobListing/jobListing'
-import Picker from '../Common/Picker'
+import { notifyUser } from '../../actions/Generic/NotificationActions'
+import Picker from '../Generic/Picker'
 import Jobs from './Jobs'
 import Pagination from 'react-js-pagination'
+
+import Notifications from 'react-notification-system-redux';
 
 class JobListingApp extends Component {
 
@@ -15,6 +18,7 @@ class JobListingApp extends Component {
     this.loadJobsPerPage = this.loadJobsPerPage.bind(this);
     this.loadUserJobs = this.loadUserJobs.bind(this);
     this.displayOptions = {'order':'DESC', 'showResponses':true};
+    //this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -29,6 +33,11 @@ class JobListingApp extends Component {
         dispatch(fetchJobsIfNeeded(selectedJobType));
       }
   }
+
+  /*handleClick() {
+    const { dispatch } = this.props;
+    dispatch(Notifications.success(notificationOpts));
+  }*/
 
   fetchJobsOfType(e) {
     e.preventDefault()
@@ -58,7 +67,7 @@ class JobListingApp extends Component {
   
   loadJobsPerPage(jobShowCount) {
     const { criteria } = this.props;
-    criteria.jobsPerPage = jobShowCount;
+    criteria.jobsPerPage = parseInt(jobShowCount);
     this.updateJobListingView(criteria);
   }
 
@@ -66,16 +75,44 @@ class JobListingApp extends Component {
     const { dispatch } = this.props;
     dispatch(updateCriteria(criteria));
     dispatch(reloadJobListing(criteria));
+    dispatch(notifyUser(null));
   }
 
   render() {
-    const { jobs, isFetching, lastUpdated, criteria, loadPage } = this.props;
+    const { jobs, isFetching, lastUpdated, criteria, loadPage, notification } = this.props;
+    const style = {
+        NotificationItem: { // Override the notification item
+          DefaultStyle: { // Applied to every notification, regardless of the notification level
+            margin: '10px 5px 2px 1px'
+          },
+
+          success: { // Applied only to the success notification item
+            color: '#026102'
+          },
+
+          warning: {
+            color: 'orange'
+          },
+
+          error: {
+            color: 'red'
+          },
+
+          info: {
+            color: 'blue'
+          }
+        }
+      };
     let selectedUser, jobsPerPage;
     this.criteria = criteria;
     jobsPerPage = typeof criteria !== "undefined" ? criteria.jobsPerPage : '';
 
     return (
       <div> 
+        <Notifications
+              notifications={notification}
+              style={style}
+          />
         <div className="opLinks">
           <a href='#' data-type="all"
             onClick={this.fetchJobsOfType}>
@@ -164,7 +201,7 @@ class JobListingApp extends Component {
         </p>
 
           <Pagination prevPageText='Previous' nextPageText='Next' firstPageText='First' lastPageText='Last'
-              pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={1000}
+              pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={100}
               onChange={
                 (index) => { var a = index ? index : 1; loadPage(a) }
               } />

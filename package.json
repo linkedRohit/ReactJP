@@ -4,17 +4,20 @@
   "private": true,
   "dependencies": {
     "babel-polyfill": "^6.23.0",
-    "fbjs": "^0.8.12",
     "immutable": "^3.8.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-js-pagination": "^2.1.0",
+    "react-notification-system": "^0.2.14",
+    "react-notification-system-redux": "^1.1.2",
     "react-redux": "^5.0.4",
-    "react-redux-toastr": "^6.2.6",
     "react-tab-panel": "^2.2.7",
+    "react-tabs": "^0.8.3",
+    "react-toastr": "^2.8.2",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.1",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "violet-paginator": "^3.0.0-beta-5"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"

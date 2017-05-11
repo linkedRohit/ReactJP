@@ -1,15 +1,25 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 
 class ManageJobsAndResponsesSearch extends Component {
+  constructor(props) {
+    super(props);  
+    this.handleSearch = this.handleSearch.bind(this);   
+  }
+
+  handleSearch(e) {
+    console.log(e.target);
+  }
+
   render() {
-    //const { selectedJobType, jobs, isFetching, lastUpdated } = this.props
+    const { search } = this.props;
+
     return (
       <div className="searchAndManageBox">        
         {/*Search Box Section*/}
         <div className="searchHeader">Search Jobs</div>
         <div className="searchForm">
           <label>Keywords</label>
-          <input type='text' name='keyword' placeholder='Title/Job Id/Job Ref No.' size='17'/>
+          <input type='text' name='keyword' placeholder='Title/Job Id/Job Ref No.' size='17' required/>
           <label>Search in</label>
           <select name="keywordType" id="srcIn" className="disBlock">
             <option value="position">Position</option>
@@ -27,7 +37,7 @@ class ManageJobsAndResponsesSearch extends Component {
             <label><input type="checkbox" name="classifiedJob" />Classifieds</label>
             <label><input type="checkbox" name="ijpJob" />IJP Jobs</label>
           </div>
-          <input type="button" className="jpButton searchButton" style={{height:30}} value="Search"/>
+          <input type="button" className="jpButton searchButton" style={{height:30}} value="Search" onClick={this.handleSearch}/>
         </div>                  
 
         {/*Account Utlization Section*/}
@@ -45,6 +55,18 @@ class ManageJobsAndResponsesSearch extends Component {
       </div>
     )
   }
+}
+
+ManageJobsAndResponsesSearch.propTypes = {
+  keyword: PropTypes.string,
+  keywordType: PropTypes.string,
+  postedFromDate: PropTypes.instanceOf(Date),
+  postedToDate: PropTypes.instanceOf(Date),
+  privateJob: PropTypes.bool,
+  premiumJob: PropTypes.bool,
+  hotJob: PropTypes.bool,
+  classifiedJob: PropTypes.bool,
+  ijpJob: PropTypes.bool,
 }
 
 export default ManageJobsAndResponsesSearch;

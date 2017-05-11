@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import JobListing from '../../components/JobListing/JobListing'
 import { toggleTab, loadPage } from '../../actions/JobListing/jobListing'
-import ReduxToastr from 'react-redux-toastr'
 
 //This is a Container component
 class JobListingContainer extends Component {
@@ -15,9 +14,7 @@ class JobListingContainer extends Component {
       //Component part
       return (
          <div>
-            {/*<ErrorList errors={errors} />{this.props.notifyUser.notifyType == "success" && toastr.success(this.props.notifyUser.notifyHeader, this.props.notifyUser.notifyMessage) }*/}
-            <JobListing criteria={this.props.criteria} toggleTab={this.props.toggleTab} loadPage={this.props.loadPage}/>
-            
+            <JobListing criteria={this.props.criteria} toggleTab={this.props.toggleTab} loadPage={this.props.loadPage} notification={this.props.notifications}/> 
          </div>
       )
     }
@@ -39,7 +36,7 @@ const mapStateToProps = (state) => {
        tab: state.tab*/
        criteria: state.updatedCriteria.criteria,
        selectedPage: state.selectedJobType,
-       notifyUser: state.notifyUser
+       notifications: state.notifications
    };
 };
 
