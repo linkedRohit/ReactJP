@@ -11,15 +11,10 @@ export const JOB_FETCH_ERROR = 'JOB_FETCH_ERROR'
 export const UPDATE_JOB_TYPE = 'UPDATE_JOB_TYPE'
 export const UPDATE_CRITERIA = 'UPDATE_CRITERIA'
 export const TOGGLE_TAB = 'TOGGLE_TAB'
+export const RESET_SEARCH = 'RESET_SEARCH'
 
 export const SEARCH = 'SEARCH';
-
-export function searchJob (searchCriteria) {
-  return {
-    type: SEARCH,
-    searchCriteria
-  }
-}
+export const RELOAD = 'RELOAD';
 
 export function selectedJobType (jobType) {
   return {
@@ -123,20 +118,53 @@ export function fetchJobsIfNeeded(jobType) {
 }
 
 export function reloadJobListing(criteria) {
-  return (dispatch, getState) => {
-    return dispatch(reloadListing(criteria, getState().selectedJobType));
+  return (dispatch, getState) => {    
+    return dispatch(reloadListing(criteria, getState().selectedJobType, RELOAD, getState().searchPayload));
   }
 }
 
-function reloadListing(criteria, jobTypeParam='all') {
+export function resetSearch() {
+  return {
+    type: RESET_SEARCH
+  }
+}
+
+export function searchJobs (searchPayload) {
+  return (dispatch, getState) => {
+    return dispatch(reloadListing(getState().updatedCriteria.criteria, getState().selectedJobType, SEARCH, searchPayload));
+  }
+}
+
+
+function reloadListing(criteria, jobTypeParam, type=null, searchPayload=null) {
   let jobType = jobTypeParam;//criteria.jobType ? criteria.jobType : 'all';
-  let jobListingAPIResourceUrl = jobListingAPIUrl + (jobType) + '.json';
-console.log(jobType, 1231231);
+  let jobListingAPIResourceUrl;
+  let querySearchParams;
+  switch(type) {
+    case SEARCH:
+      jobListingAPIResourceUrl = jobListingSearchAPIUrl;
+      querySearchParams=searchPayload;
+      break;
+    default:
+      jobListingAPIResourceUrl = jobListingAPIUrl;
+      querySearchParams=null;
+  }
+  jobListingAPIResourceUrl += jobType + '.json';
+
+
+  
   jobListingAPIResourceUrl += '?p=' + criteria.pageIndex + '&jobsPerPage=' + criteria.jobsPerPage;
   if(['meditation','fnf'].indexOf(jobTypeParam) < 0) {
     jobListingAPIResourceUrl += '&userFilter=' + criteria.userFilter + '&jobStatusFilter=' + criteria.jobStatusFilter;
   }
   jobListingAPIResourceUrl += '&sortedOn=' + criteria.sortedOn + '&sortOrder=' + criteria.sortedOn;
+  if(querySearchParams) {
+    jobListingAPIResourceUrl += '&keyword=' + querySearchParams.keyword + '&keywordType=' + querySearchParams.selectedKeywordType;
+    jobListingAPIResourceUrl += '&jobType=' + querySearchParams.jobType;
+    jobListingAPIResourceUrl += '&postedFromDate=' + querySearchParams.postedFromDate;
+    jobListingAPIResourceUrl += '&postedToDate=' + querySearchParams.postedToDate;
+  }
+
   return dispatch => {
     dispatch(requestJobs(jobType))
     return fetch(jobListingAPIResourceUrl)

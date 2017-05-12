@@ -74,7 +74,6 @@
     float: left;
     margin-left: 15px;
     margin-top: 25px;
-    border: 1px solid #999;
     border-radius: 5px;
     font-size: 13px;
     line-height: 35px;
@@ -85,6 +84,10 @@
     background-color: #17a7f3;
     color: #fff;
     font-weight: 500;
+}
+
+.searchMenu {    
+    
 }
 
 .jobListLoading {
@@ -101,6 +104,7 @@
 }
 
 .searchForm {
+    border: 1px solid #999;
 }
 
 .searchForm input[type="checkbox"] {
@@ -113,8 +117,8 @@
     height: 25px;
     border-radius: 3px;
     border: 1px solid #aaa;
-    padding: 2px;
-    margin-left: 7px;
+    margin-left: 4px;
+    text-indent: inherit;
 }
 
 .searchForm label {
@@ -123,7 +127,7 @@
 
 .imgCalendar {
     height: 25px;
-    margin-bottom: -3px;
+    margin-bottom: -5px;
     margin-left: 5px;
 }
 
@@ -168,4 +172,19 @@
     background: #c3cfd8;
     color: black;
     padding: 0 8px;
+}
+
+.reset {
+    padding: 15px 10px;
+    font-weight: 300;
+    line-height: 0;
+    text-decoration: none;
+}
+
+.searchBtn {
+    padding: 15px 25px;
+    font-weight: bold;
+    line-height: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { loadPage, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/JobListing/jobListing'
+import { resetSearch, loadPage, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/JobListing/jobListing'
 import { notifyUser } from '../../actions/Generic/NotificationActions'
 import Picker from '../Generic/Picker'
 import Jobs from './Jobs'
@@ -49,6 +49,7 @@ class JobListingApp extends Component {
     }
     const { dispatch, criteria } = this.props;
     criteria.jobType = jobType;
+    dispatch(resetSearch());
     dispatch(updateCriteria(criteria));
     dispatch(selectedJobType(jobType));
     dispatch(invalidateJobListing(jobType));

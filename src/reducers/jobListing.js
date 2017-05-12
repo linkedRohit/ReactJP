@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux'
 import {
   SELECT_JOBLISTING, INVALIDATE_JOBLISTING,
-  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR, UPDATE_CRITERIA, TOGGLE_TAB
+  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR, UPDATE_CRITERIA, 
+  TOGGLE_TAB, RESET_SEARCH
 } from '../actions/JobListing/jobListing'
 //import {reducer as toastrReducer} from 'react-redux-toastr'
 import {reducer as notifications} from 'react-notification-system-redux';
@@ -23,19 +24,24 @@ const INITIAL_CRITERIA = {
   'sortOrder': DEFAULT_SORTING_ORDER
 }
 
+const SHOW_SEARCH_ON_TABS = ['all','cricket','rugbyunion'];
+const INITIAL_SEARCH = {'keyword':'','selectedKeywordType':'Position'};
+
+
 function selectedJobType(state='all', action) {
   switch (action.type) {
-  case SELECT_JOBLISTING:
+  case SELECT_JOBLISTING:    
     return action.jobType
-  case TOGGLE_TAB:
-    let criteria = action.criteria ? action.criteria : INITIAL_CRITERIA;
-    criteria.pageIndex = 1;
-    return Object.assign({}, state, {
-      ['criteria']: criteria
-    });
   default:
     return state
   }
+}
+
+function showSearch(jobType) {
+  if(SHOW_SEARCH_ON_TABS.indexOf(jobType) >= 0) {
+    return true;
+  }
+  return false;
 }
 
 function processJobListing(state = {
@@ -47,6 +53,7 @@ function processJobListing(state = {
   } else {
     jobType = ALL
   }
+
   switch (action.type) {
     case INVALIDATE_JOBLISTING:
       return Object.assign({}, state, {
@@ -105,11 +112,30 @@ function updatedCriteria(state = { 'criteria': INITIAL_CRITERIA }, action) {
   }
 }
 
+function search(state = { 'params': INITIAL_SEARCH, 'resetSearch': false }, action) {
+  switch (action.type) {
+    case RESET_SEARCH:
+      return Object.assign({}, state, {
+        resetSearch: true,
+      });
+    default:
+      let showSearchFlag = showSearch(action.jobType);
+      let showMngDupFlag = showSearchFlag;
+      return Object.assign({}, state, {
+        resetSearch: true,
+        showSearchWidget: showSearchFlag,
+        showManageDupWidget: showMngDupFlag,
+        showAccountWidget: true
+      });
+  }
+}
+
 const jobListingReducer = combineReducers({
   jobsByJoblisting,
   selectedJobType,
   updatedCriteria,
-  notifications
+  notifications,
+  search
 })
 
 export default jobListingReducer

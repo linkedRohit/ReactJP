@@ -1,20 +1,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import JobListing from '../../components/JobListing/JobListing'
-import { toggleTab, loadPage } from '../../actions/JobListing/jobListing'
+import { toggleTab, loadPage, searchJobs } from '../../actions/JobListing/jobListing'
 
 //This is a Container component
 class JobListingContainer extends Component {
     constructor(props) {
       super(props);
-      console.log(props,123899289);
     }
 
     render() {
       //Component part
       return (
          <div>
-            <JobListing criteria={this.props.criteria} toggleTab={this.props.toggleTab} loadPage={this.props.loadPage} notification={this.props.notifications}/> 
+            <JobListing criteria={this.props.criteria} toggleTab={this.props.toggleTab} loadPage={this.props.loadPage} notification={this.props.notifications} search={this.props.search} /> 
          </div>
       )
     }
@@ -24,7 +23,8 @@ class JobListingContainer extends Component {
 const mapDispatchToProps = (dispatch) => {
     return ({
         toggleTab: (index) => {dispatch(toggleTab(index))},
-        loadPage: (index) => {dispatch(loadPage(index))}
+        loadPage: (index) => {dispatch(loadPage(index))}//,
+        //searchJobs: (searchCriteria) => {dispatch(searchJobs(searchCriteria))},
     })
 };
 
@@ -36,7 +36,8 @@ const mapStateToProps = (state) => {
        tab: state.tab*/
        criteria: state.updatedCriteria.criteria,
        selectedPage: state.selectedJobType,
-       notifications: state.notifications
+       notifications: state.notifications,
+       search: state.search
    };
 };
 
