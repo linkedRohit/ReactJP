@@ -37,6 +37,8 @@ function setNotificationObject(notification, notificationOptions = notificationO
 		notificationOptions.autoDismiss = notification.autoDismiss;
 	if(notification.action)
 		notificationOptions.action = notification.action;
+	if(notification.type)
+		notificationOptions.type = notification.type;
 	return notificationOptions;
 }
 

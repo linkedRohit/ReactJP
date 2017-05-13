@@ -1,10 +1,14 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { resetSearch, loadPage, updateCriteria, selectedJobType, fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } from '../../actions/JobListing/jobListing'
+import { resetSearch, loadPage, updateCriteria, selectedJobType, 
+  fetchJobsIfNeeded, invalidateJobListing, reloadJobListing } 
+  from '../../actions/JobListing/jobListing'
+  
 import { notifyUser } from '../../actions/Generic/NotificationActions'
 import Picker from '../Generic/Picker'
 import Jobs from './Jobs'
 import Pagination from 'react-js-pagination'
+import { WARNING } from '../../Constants'
 
 import Notifications from 'react-notification-system-redux';
 
@@ -22,16 +26,44 @@ class JobListingApp extends Component {
   }
 
   componentDidMount() {
+    //console.log('mount')
     const { dispatch, selectedJobType, criteria } = this.props;
     //dispatch(updateCriteria(criteria));
-    dispatch(fetchJobsIfNeeded(selectedJobType));
+    this.requests = [];
+    this.requests.push(
+      dispatch(fetchJobsIfNeeded(selectedJobType))
+    );
+  //dispatch(fetchJobsIfNeeded(selectedJobType));
   }
 
   componentDidUpdate(prevProps) {
+      //console.log('update')
+      const { dispatch, selectedJobType } = this.props;
       if (this.props.selectedJobType !== prevProps.selectedJobType) {
-        const { dispatch, selectedJobType } = this.props;
         dispatch(fetchJobsIfNeeded(selectedJobType));
       }
+  }
+
+  componentWillUnmount() {
+    //console.log('unmount')
+      //this.prevPromise.abort();
+      //this.requests.forEach(request => request.abort());
+  }
+
+  componentWillReceiveProps(prevProps) {
+    //console.log('props')
+      if(this.props.jobs && this.props.jobs.length != 0) {
+        let notificationObj=this.createNotificationForNoJobs();
+        //dispatch(notifyUser(notificationObj));
+      }
+  }
+
+  createNotificationForNoJobs() {
+    let notification = {};
+    notification.title = 'No Data found!';
+    notification.message = 'No jobs are found for the criteria!';
+    //notification.type = WARNING;
+    return notification;
   }
 
   /*handleClick() {
@@ -54,6 +86,8 @@ class JobListingApp extends Component {
     dispatch(selectedJobType(jobType));
     dispatch(invalidateJobListing(jobType));
     dispatch(fetchJobsIfNeeded(jobType));
+    this.setState({ reRenderResponses: true });
+
   }
 
   operation() {
@@ -80,7 +114,7 @@ class JobListingApp extends Component {
   }
 
   render() {
-    const { jobs, isFetching, lastUpdated, criteria, loadPage, notification } = this.props;
+    const { selectedPage, responses, menuOption, jobs, isFetching, lastUpdated, criteria, loadPage, notification } = this.props;
     const style = {
         NotificationItem: { // Override the notification item
           DefaultStyle: { // Applied to every notification, regardless of the notification level
@@ -108,45 +142,64 @@ class JobListingApp extends Component {
     this.criteria = criteria;
     jobsPerPage = typeof criteria !== "undefined" ? criteria.jobsPerPage : '';
 
+      let ths = this;
+    /*let menuSubtabs = ""
+    if(menuOption.showSubTabs) {
+        for (var i=0; i < menuOption.subTabs.length; i++) {
+            menuSubtabs += "<a href='#' data-type=menuOption.subTabs[i].key style={{ border: 0 }} onClick={this.fetchJobsOfType}> menuOption.subTabs[i].label</a>";
+        }
+    }*/
     return (
       <div> 
         <Notifications
               notifications={notification}
               style={style}
           />
-        <div className="opLinks">
-          <a href='#' data-type="all"
-            onClick={this.fetchJobsOfType}>
-            All
-          </a>
-          <a href='#' data-type="cricket"
-            onClick={this.fetchJobsOfType}>
-            Eapps
-          </a>
-          <a href='#' data-type="politics"
-            onClick={this.fetchJobsOfType}>
-            Emails
-          </a>
-          <a href='#' data-type="rugbyunion"
-            onClick={this.fetchJobsOfType}>
-            CSM
-          </a>
-          <a href='#' data-type="golf" style={{ border: 0 }}
-            onClick={this.fetchJobsOfType}>
-            Other Media Jobs
-          </a>
-        </div>
-        <p className="opButtons pb10 bbDark">
-          <input type="checkbox" name="jobId[]" value='all'/>
-          <input type="button" value="Refresh" onClick={this.operation.bind(null)} />
-          <input type="button" value="Share" onClick={this.operation.bind(null)} />
-          <input type="button" value="Unshare" onClick={this.operation.bind(null)} />
-          <input type="button" value="Remove" onClick={this.operation.bind(null)} />
-          <input type="button" value="Invite Referrals" onClick={this.operation.bind(null)} />
-          <strong className="ml50">Posted By </strong> <Picker value={selectedUser} onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
-          <strong className="ml15">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
-          <strong className="ml15">Show </strong> <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
-        </p>        
+          <div className="opLinks">
+            {selectedPage != "all" && <a href='#' data-type="all" onClick={this.fetchJobsOfType}>All Jobs</a>}
+            {selectedPage == "all" && <a href='#' data-type="all" ><strong>All Jobs</strong></a>}
+            
+            {selectedPage != "cricket" && <a href='#' data-type="cricket" onClick={this.fetchJobsOfType}>eApps Jobs</a>}
+            {selectedPage == "cricket" && <a href='#' data-type="cricket"><strong>eApps Jobs</strong></a>}
+
+            {selectedPage != "politics" && <a href='#' data-type="politics" onClick={this.fetchJobsOfType}>Other Media Jobs</a>}
+            {selectedPage == "politics" && <a href='#' data-type="politics"><strong>Other Media Jobs</strong></a>}
+
+            {selectedPage != "rugbyunion" && <a href='#' data-type="rugbyunion" onClick={this.fetchJobsOfType}>Email (Eapps)</a>}
+            {selectedPage == "rugbyunion" && <a href='#' data-type="rugbyunion"><strong>Email (Eapps)</strong></a>}
+
+            {selectedPage != "soccer" && <a href='#' data-type="soccer" onClick={this.fetchJobsOfType}>Career Site Manager</a>}
+            {selectedPage == "soccer" && <a href='#' data-type="soccer"><strong>Career Site Manager</strong></a>}
+
+            {selectedPage != "golf" && <a href='#' data-type="golf" style={{ border: 0 }} onClick={this.fetchJobsOfType}>Email (CSM)</a>}
+            {selectedPage == "golf" && <a href='#' data-type="golf" style={{ border: 0 }} ><strong>Email (CSM)</strong></a>}
+
+          </div>
+          {menuOption.showOperations && <p className="opButtons pb10 bbDark">
+                  <input type="checkbox" name="jobId[]" value='all'/>
+                  <input type="button" value="Refresh" onClick={this.operation.bind(null)} />
+                  <input type="button" value="Share" onClick={this.operation.bind(null)} />
+                  <input type="button" value="Unshare" onClick={this.operation.bind(null)} />
+                  <input type="button" value="Remove" onClick={this.operation.bind(null)} />
+                  <input type="button" value="Invite Referrals" onClick={this.operation.bind(null)} />
+                  <strong className="ml50">Posted By </strong> <Picker value={selectedUser} onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
+                  <strong className="ml15">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
+                  <strong className="ml15">Show </strong> <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+              </p>
+          }   
+          {menuOption.showSubTabs && <div className="opLinks mt10"> 
+            { menuOption.subTabs.map(function(object, i) { 
+                let styleProp = (i==menuOption.subTabs.length-1) ? {border: 0} : {};
+
+                  if(ths.selectedListingTab == object.key){
+                    return <a href='#' key={object.key} data-type={object.key} style={styleProp}><strong>{object.label}</strong></a>
+                  } else {           
+                    return <a href='#' key={object.key} data-type={object.key} onClick={ths.fetchJobsOfType} style={styleProp}> {object.label}</a>
+                  }
+                  
+                }
+            )}
+            </div>}
         <p>
           {lastUpdated &&
             <span>
@@ -185,7 +238,7 @@ class JobListingApp extends Component {
                 </div>
               </li>
             </ul>
-            <Jobs jobs={jobs} displayOptions={this.displayOptions}/>
+            <Jobs key={selectedPage} jobs={jobs} displayOptions={this.displayOptions} responses={responses}/>
           </div>
         }  
 

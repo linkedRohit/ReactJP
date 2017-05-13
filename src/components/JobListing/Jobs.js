@@ -1,17 +1,19 @@
 import React, { PropTypes, Component } from 'react'
+import Response from './Response'
 
 export default class Jobs extends Component {
   render() {
     return (
       <ul className="jobListingDiv">
-        { this.renderJobTuples(this.props.jobs, this.props.displayOptions) }    
+        { this.renderJobTuples(this.props.jobs, this.props.displayOptions, this.props.responses) }    
       </ul>
     )
   }
 
-  renderJobTuples(jobs, displayOptions) {
+  renderJobTuples(jobs, displayOptions, responses) {
+
     return jobs.map((job, i) => {
-        if(displayOptions.showResponses) {
+        if(displayOptions.showResponses, responses) {
           return (
             <li key={i}>          
               <input type="checkbox" name="jobId[]" value={i}/>
@@ -19,7 +21,7 @@ export default class Jobs extends Component {
               <div style={{ display: 'inline-block', width: '150px', textAlign:'right'}}></div>
               <div style={{ display: 'inline-block', width: '150px'}}>{job.author}</div>
               <a style={{ overflow: 'visible', width: '75px' }}><span>{new Date(job.created).toLocaleTimeString()}</span></a>
-              <a style={{ overflow: 'visible', width: '75px', textAlign:'right' }} href={"http://csm.naukri.com/" + i}><span style={{width :"50px"}}>{job.score}</span></a>
+              <a style={{ overflow: 'visible', width: '85px', textAlign:'right' }} href={responses.details.responseUrl}><Response key={i} jobId={i} responses={responses}/></a>
             </li>
           );
         } else {

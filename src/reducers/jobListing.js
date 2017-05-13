@@ -1,11 +1,16 @@
 import { combineReducers } from 'redux'
 import {
   SELECT_JOBLISTING, INVALIDATE_JOBLISTING,
-  REQUEST_JOBS, RECEIVE_JOBS, JOB_FETCH_ERROR, UPDATE_CRITERIA, 
-  TOGGLE_TAB, RESET_SEARCH
+  REQUEST_JOBS, RECEIVE_JOBS, FETCH_ERROR, UPDATE_CRITERIA, 
+  TOGGLE_TAB, RESET_SEARCH, REQUEST_RESPONSES, RECEIVE_RESPONSES
 } from '../actions/JobListing/jobListing'
 //import {reducer as toastrReducer} from 'react-redux-toastr'
 import {reducer as notifications} from 'react-notification-system-redux';
+
+/*import { createEpicMiddleware } from 'redux-observable';
+import { rootEpic } from '../actions/Epics/JobListing';
+
+const epicMiddleware = createEpicMiddleware(rootEpic);*/
 
 const ALL = 'all';
 const DEFAULT_JOB_COUNT = 20;
@@ -24,9 +29,63 @@ const INITIAL_CRITERIA = {
   'sortOrder': DEFAULT_SORTING_ORDER
 }
 
-const SHOW_SEARCH_ON_TABS = ['all','cricket','rugbyunion'];
+const SHOW_SEARCH_ON_TABS = ['all','cricket','rugbyunion','golf','soccer', 'politics'];
 const INITIAL_SEARCH = {'keyword':'','selectedKeywordType':'Position'};
 
+const EMAIL_EAPPS = 'rugbyunion';
+const EMAIL_CSM = 'golf';
+const OTHER_MEDIA_JOBS = 'politics';
+
+function JobListingMenu(state = {
+  showOperations: true,
+  showSubTabs: false
+}, action) {
+  if(action.type != RECEIVE_JOBS) return state;
+  let jobType = action.jobType ? action.jobType : ALL;
+  switch (jobType){
+    case EMAIL_EAPPS:
+      return Object.assign({}, state, {
+        showOperations: false,
+        showSubTabs: true,
+        subTabs: [
+          {
+            label: 'Resdex Emails posted as Jobs',
+            key: 'rugbyunion'
+          },
+          {
+            label: 'Eapps Emails',
+            key: 'eappsEmails'
+          }
+        ]
+      });
+    case EMAIL_CSM:
+      return Object.assign({}, state, {
+        showOperations: false,
+        showSubTabs: true,
+        subTabs: [
+          {
+            label: 'Resdex Emails posted as Jobs',
+            key: 'golf'
+          },
+          {
+            label: 'CSM Emails',
+            key: 'csmEmails'
+          }
+        ]
+      });
+    case OTHER_MEDIA_JOBS:
+      return Object.assign({}, state, {
+        showOperations: false,
+        showSubTabs: false
+      });
+
+    default:
+      return Object.assign({}, state, {
+        showOperations: true,
+        showSubTabs: false
+      })
+  }
+}
 
 function selectedJobType(state='all', action) {
   switch (action.type) {
@@ -75,7 +134,7 @@ function processJobListing(state = {
         selectJobType: jobType
       });
       return newState;
-    case JOB_FETCH_ERROR:
+    case FETCH_ERROR:
       return Object.assign({}, state, {
         hasErrored: action.hasErrored
       });
@@ -92,7 +151,7 @@ function jobsByJoblisting(state = { }, action) {
       return Object.assign({}, state, {
         [action.jobType]: processJobListing(state[action.jobType], action)
       })
-    case JOB_FETCH_ERROR:
+    case FETCH_ERROR:
       console.log(action.hasErrored);
       return state;
     default:
@@ -130,12 +189,37 @@ function search(state = { 'params': INITIAL_SEARCH, 'resetSearch': false }, acti
   }
 }
 
+function responses (state = {}, action) {
+  switch(action.type) {
+    case RECEIVE_RESPONSES:
+      return Object.assign({}, state, {
+        details: action.responsePayload,
+        jobId: action.jobId,
+        jobType: action.jobType,
+        fetchingResponse: false
+      });
+    default:
+      return Object.assign({}, state, {
+        details: {
+          responseUrl: '#',
+          latestResponseCount: 0,
+          cummulativeResponseCount: 0
+        },
+        fetchingResponse: true,
+        jobId: ALL,
+        jobType: ALL
+      });
+  }
+}
+
 const jobListingReducer = combineReducers({
+  JobListingMenu,
   jobsByJoblisting,
   selectedJobType,
   updatedCriteria,
   notifications,
-  search
+  search,
+  responses
 })
 
 export default jobListingReducer

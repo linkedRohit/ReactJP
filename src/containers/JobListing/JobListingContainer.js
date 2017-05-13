@@ -13,7 +13,7 @@ class JobListingContainer extends Component {
       //Component part
       return (
          <div>
-            <JobListing criteria={this.props.criteria} toggleTab={this.props.toggleTab} loadPage={this.props.loadPage} notification={this.props.notifications} search={this.props.search} /> 
+            <JobListing selectedPage={this.props.selectedPage} responses={this.props.responses} menuOption={this.props.menuOption} criteria={this.props.criteria} toggleTab={this.props.toggleTab} loadPage={this.props.loadPage} notification={this.props.notifications} search={this.props.search} /> 
          </div>
       )
     }
@@ -37,7 +37,9 @@ const mapStateToProps = (state) => {
        criteria: state.updatedCriteria.criteria,
        selectedPage: state.selectedJobType,
        notifications: state.notifications,
-       search: state.search
+       search: state.search,
+       menuOption: state.JobListingMenu,
+       responses: state.responses
    };
 };
 

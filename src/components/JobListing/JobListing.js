@@ -13,7 +13,7 @@ class JobListing extends Component {
 	}
 
 	render() {
-		const { toggleTab, notification, loadPage, criteria, search } = this.props;
+		const { selectedPage, responses, toggleTab, notification, loadPage, criteria, search, menuOption } = this.props;
 		
 		return (
 			<div>
@@ -32,10 +32,10 @@ class JobListing extends Component {
 				            maxWidth: 850
 			            }}>
 			            <div tabTitle="Jobs and Responses" id="JobsAndResponses">
-			                <JobListingApp criteria={criteria} loadPage={loadPage} notification={notification} />
+			                <JobListingApp selectedPage={selectedPage} responses = {responses} menuOption={menuOption} criteria={criteria} loadPage={loadPage} notification={notification} />
 			            </div> 
 			            <div tabTitle="Saved Jobs" id="SavedJobs">
-			                <SaveJobsListingApp criteria={criteria} loadPage={loadPage} notification={notification} />
+			                <SaveJobsListingApp menuOption={menuOption} criteria={criteria} loadPage={loadPage} notification={notification} />
 			            </div>			            
 			          </TabBody>
 			        </TabPanel>
@@ -74,7 +74,8 @@ JobListing.propTypes = {
 	notifications: PropTypes.array,
 	criteria: PropTypes.object,
 	loadPage: PropTypes.func,
-	search: PropTypes.object
+	search: PropTypes.object,
+	selectedPage: PropTypes.string
 }
 
 export default JobListing;

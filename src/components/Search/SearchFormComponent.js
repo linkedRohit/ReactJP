@@ -179,7 +179,7 @@ class SearchFormComponent extends Component {
 	          className="reset"
 	          onClick={this.handleClearForm} >Reset</a>
 
-	        {this.state.keyword && <label>Searching <strong>{this.state.keyword}</strong> as <br/><strong>{this.state.selectedKeywordType}</strong></label>}
+	        <div style={{ padding: 5 }}>{this.state.keyword && <label style={{ textIndent:0 }}>Searching <strong>{this.state.keyword}</strong> as <br/><strong>{this.state.selectedKeywordType}</strong></label>}</div>
 	          
 	        </div>
 	        </div>

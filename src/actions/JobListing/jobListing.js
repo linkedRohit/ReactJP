@@ -2,16 +2,19 @@ import fetch from 'isomorphic-fetch'
 
 const jobListingAPIUrl = `https://www.reddit.com/r/`;
 const jobListingSearchAPIUrl = `https://www.reddit.com/r/`;
+const jobListingResponseAPIUrl = `https://www.reddit.com/r/`;
 
 export const REQUEST_JOBS = 'REQUEST_JOBS'
 export const RECEIVE_JOBS = 'RECEIVE_JOBS'
 export const SELECT_JOBLISTING = 'SELECT_JOBLISTING'
 export const INVALIDATE_JOBLISTING = 'INVALIDATE_JOBLISTING'
-export const JOB_FETCH_ERROR = 'JOB_FETCH_ERROR'
+export const FETCH_ERROR = 'FETCH_ERROR'
 export const UPDATE_JOB_TYPE = 'UPDATE_JOB_TYPE'
 export const UPDATE_CRITERIA = 'UPDATE_CRITERIA'
 export const TOGGLE_TAB = 'TOGGLE_TAB'
 export const RESET_SEARCH = 'RESET_SEARCH'
+export const RECEIVE_RESPONSES = 'RECEIVE_RESPONSES'
+export const REQUEST_RESPONSES = 'REQUEST_RESPONSES'
 
 export const SEARCH = 'SEARCH';
 export const RELOAD = 'RELOAD';
@@ -51,9 +54,9 @@ export function invalidateJobListing(jobType) {
   }
 }
 
-export function jobFetchError(bool) {
+export function fetchError(bool) {
   return {
-    type: 'JOB_FETCH_ERROR',
+    type: FETCH_ERROR,
     hasErrored: bool
   }
 }
@@ -61,6 +64,14 @@ export function jobFetchError(bool) {
 function requestJobs(jobType) {
   return {
     type: REQUEST_JOBS,
+    jobType
+  }
+}
+
+function requestResponses(jobId, jobType) {
+  return {
+    type: REQUEST_RESPONSES,
+    jobId,
     jobType
   }
 }
@@ -81,6 +92,20 @@ function receiveJobs(jobType, jobs) {
   }
 }
 
+function receiveResponses(jobId, jobType, responses) {
+  let responsesObj = responses.data.children[jobId].data;
+  return {
+    type: RECEIVE_RESPONSES,
+    jobId,
+    jobType,
+    responsePayload: {
+      responseUrl: responsesObj.url,
+      latestResponseCount: responsesObj.num_comments,
+      cummulativeResponseCount: responsesObj.ups
+    }
+  }
+}
+
 function fetchJobs(jobType) {
   jobType = jobType ? jobType : 'all';
   return dispatch => {
@@ -94,7 +119,7 @@ function fetchJobs(jobType) {
       })
       .then((response)=> response.json())
       .then(jobs => dispatch(receiveJobs(jobType, jobs)))
-      .catch((e) => dispatch(jobFetchError(e)));
+      .catch((e) => dispatch(fetchError(e)));
   }
 }
 
@@ -135,7 +160,6 @@ export function searchJobs (searchPayload) {
   }
 }
 
-
 function reloadListing(criteria, jobTypeParam, type=null, searchPayload=null) {
   let jobType = jobTypeParam;//criteria.jobType ? criteria.jobType : 'all';
   let jobListingAPIResourceUrl;
@@ -150,8 +174,6 @@ function reloadListing(criteria, jobTypeParam, type=null, searchPayload=null) {
       querySearchParams=null;
   }
   jobListingAPIResourceUrl += jobType + '.json';
-
-
   
   jobListingAPIResourceUrl += '?p=' + criteria.pageIndex + '&jobsPerPage=' + criteria.jobsPerPage;
   if(['meditation','fnf'].indexOf(jobTypeParam) < 0) {
@@ -176,6 +198,22 @@ function reloadListing(criteria, jobTypeParam, type=null, searchPayload=null) {
       })
       .then((response)=> response.json())
       .then(jobs => dispatch(receiveJobs(jobType, jobs, criteria)))
-      .catch((e) => dispatch(jobFetchError(e)));
+      .catch((e) => dispatch(fetchError(e)));
+  }
+}
+
+export function fetchResponsesForJob(jobId, jobType) {
+  let respUrl = jobListingResponseAPIUrl + jobType + '.json';//+ '?jobType=' + jobType;// + '&jobId=' + jobId;
+  return dispatch => {   
+    dispatch(requestResponses(jobId, jobType))
+    return fetch(respUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;       
+      }).then((response)=> response.json())
+      .then(responses => dispatch(receiveResponses(jobId, jobType, responses)))
+      .catch((e) => dispatch(fetchError(e)));
   }
 }

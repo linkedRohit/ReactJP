@@ -2,8 +2,11 @@ import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 import jobListingReducer from './reducers/jobListing'
-//import searchReducer from './reducers/search'
+import { createEpicMiddleware } from 'redux-observable';
+import { rootEpic, rootReducer } from './actions/Epics/JobListing';
 
+//import searchReducer from './reducers/search'
+//const epicMiddleware = createEpicMiddleware(rootEpic);
 const loggerMiddleware = createLogger()
 
 export default function configureStore(preloadedState) {
@@ -12,8 +15,9 @@ export default function configureStore(preloadedState) {
     //searchReducer,
     preloadedState,
     applyMiddleware(
-      thunkMiddleware,
-      loggerMiddleware
+  //    epicMiddleware,
+      //loggerMiddleware,
+      thunkMiddleware
     )
   )
 }
