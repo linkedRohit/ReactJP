@@ -45,6 +45,7 @@ class JobListingApp extends Component {
   }
 
   componentWillUnmount() {
+    console.log(this.requests);
     //console.log('unmount')
       //this.prevPromise.abort();
       //this.requests.forEach(request => request.abort());
@@ -74,20 +75,21 @@ class JobListingApp extends Component {
   fetchJobsOfType(e) {
     e.preventDefault()
     let jobType = e.target.dataset.type;
-    if(typeof jobType === "undefined") {
+    const { dispatch, criteria } = this.props;
+    if(jobType === "refresh") {
       jobType = this.selectedListingTab ? this.selectedListingTab : 'all';
+      criteria.isRefresh = true;
     } else {
       this.selectedListingTab = jobType;
+      criteria.isRefresh = false;
     }
-    const { dispatch, criteria } = this.props;
     criteria.jobType = jobType;
+
     dispatch(resetSearch());
     dispatch(updateCriteria(criteria));
     dispatch(selectedJobType(jobType));
     dispatch(invalidateJobListing(jobType));
     dispatch(fetchJobsIfNeeded(jobType));
-    this.setState({ reRenderResponses: true });
-
   }
 
   operation() {
@@ -115,6 +117,7 @@ class JobListingApp extends Component {
 
   render() {
     const { selectedPage, responses, menuOption, jobs, isFetching, lastUpdated, criteria, loadPage, notification } = this.props;
+    console.log(this.props,12312093120931203);
     const style = {
         NotificationItem: { // Override the notification item
           DefaultStyle: { // Applied to every notification, regardless of the notification level
@@ -142,7 +145,9 @@ class JobListingApp extends Component {
     this.criteria = criteria;
     jobsPerPage = typeof criteria !== "undefined" ? criteria.jobsPerPage : '';
 
-      let ths = this;
+    let ths = this;
+
+    let isRefresh = (this.props.criteria && this.props.criteria.isRefresh) ? this.props.criteria.isRefresh : false;
     /*let menuSubtabs = ""
     if(menuOption.showSubTabs) {
         for (var i=0; i < menuOption.subTabs.length; i++) {
@@ -208,7 +213,7 @@ class JobListingApp extends Component {
             </span>
           }
           {!isFetching &&
-            <a href='#'
+            <a href='#' data-type="refresh"
                onClick={this.fetchJobsOfType.bind(null)}>
               Refresh
             </a>
@@ -238,7 +243,7 @@ class JobListingApp extends Component {
                 </div>
               </li>
             </ul>
-            <Jobs key={selectedPage} jobs={jobs} displayOptions={this.displayOptions} responses={responses}/>
+            <Jobs key={selectedPage} isRefresh={isRefresh} jobs={jobs} displayOptions={this.displayOptions} responses={responses}/>
           </div>
         }  
 
@@ -252,13 +257,15 @@ class JobListingApp extends Component {
           <strong className="ml50">Posted By </strong> <Picker onChange={this.loadUserJobs} options={[ 'All', 'You', 'Others' ]} />
           <strong className="ml15">Status </strong> <Picker onChange={this.loadDifferentJobs} options={[ 'All Jobs', 'Active', 'Inactive', 'Shared', 'Unshared' ]} />
           <strong className="ml15">Show </strong> <Picker value={jobsPerPage} onChange={this.loadJobsPerPage} options={[ 20, 30, 40, 50, 100, 150 ]} /> per page
+          { typeof jobs !== "undefined" && <Pagination prevPageText='Previous' nextPageText='Next' firstPageText='First' lastPageText='Last'
+            pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={this.props.criteria.totalJobsCount}
+            onChange={
+              (index) => { var a = index ? index : 1; loadPage(a) }
+            } />
+        }
         </p>
 
-          <Pagination prevPageText='Previous' nextPageText='Next' firstPageText='First' lastPageText='Last'
-              pageRangeDisplayed={5} activePage={this.props.criteria.pageIndex} itemsCountPerPage={this.props.criteria.jobsPerPage} totalItemsCount={100}
-              onChange={
-                (index) => { var a = index ? index : 1; loadPage(a) }
-              } />
+        
       </div>
     )
   }

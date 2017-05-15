@@ -1,8 +1,14 @@
-import fetch from 'isomorphic-fetch'
+//import fetch from 'isomorphic-fetch'
+import axios from 'axios';
+import axiosCancel from 'axios-cancel';
+
+axiosCancel(axios, {
+  debug: false // default 
+});
 
 const jobListingAPIUrl = `https://www.reddit.com/r/`;
 const jobListingSearchAPIUrl = `https://www.reddit.com/r/`;
-const jobListingResponseAPIUrl = `https://www.reddit.com/r/`;
+const jobListingResponseAPIUrl = `https://www.redsdit.com/r/`;
 
 export const REQUEST_JOBS = 'REQUEST_JOBS'
 export const RECEIVE_JOBS = 'RECEIVE_JOBS'
@@ -20,6 +26,7 @@ export const SEARCH = 'SEARCH';
 export const RELOAD = 'RELOAD';
 
 export function selectedJobType (jobType) {
+  axios.cancelAll();
   return {
     type: SELECT_JOBLISTING,
     jobType
@@ -206,6 +213,23 @@ export function fetchResponsesForJob(jobId, jobType) {
   let respUrl = jobListingResponseAPIUrl + jobType + '.json';//+ '?jobType=' + jobType;// + '&jobId=' + jobId;
   return dispatch => {   
     dispatch(requestResponses(jobId, jobType))
+    return axios.get(respUrl, {
+      requestId: jobType+'_'+jobId
+    //}).then((res)=> console.log(res), res.json())
+    }).then(res => dispatch(receiveResponses(jobId, jobType, res.data)))
+      .catch((e) => {
+        //dispatch(fetchError(e));
+        if (axios.isCancel(e)) {
+          //dispatch(fetchError('Request is cancelled by the app'));
+        } else {
+          //dispatch(fetchError(e));
+        }
+        console.log(e);
+      });
+    }
+  /*let respUrl = jobListingResponseAPIUrl + jobType + '.json';//+ '?jobType=' + jobType;// + '&jobId=' + jobId;
+  return dispatch => {   
+    dispatch(requestResponses(jobId, jobType))
     return fetch(respUrl)
       .then((response) => {
         if (!response.ok) {
@@ -215,5 +239,5 @@ export function fetchResponsesForJob(jobId, jobType) {
       }).then((response)=> response.json())
       .then(responses => dispatch(receiveResponses(jobId, jobType, responses)))
       .catch((e) => dispatch(fetchError(e)));
-  }
+  }*/
 }

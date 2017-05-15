@@ -165,7 +165,13 @@ function updatedCriteria(state = { 'criteria': INITIAL_CRITERIA }, action) {
       return Object.assign({}, state, {
         ['criteria']: action.criteria ? action.criteria : INITIAL_CRITERIA
       })
-      //return processJobListing(state, action)
+    case RECEIVE_JOBS:
+      var updatedCriteria = action.criteria ? action.criteria : INITIAL_CRITERIA
+      updatedCriteria.totalJobsCount = action.jobs[0].thumbnail_width;//action.totalJobsCount
+      var newState = Object.assign({}, state, {
+        ['criteria']: updatedCriteria
+      });
+      return newState;
     default:
       return state;
   }

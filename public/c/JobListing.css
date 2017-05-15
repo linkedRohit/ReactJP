@@ -30,7 +30,7 @@
 }
 
 .jobListingDiv li {
-    height: 75px;
+    height: 100px;
     padding: 5px 0px;
     list-style: none;
     border-top: 1px solid #eee;
@@ -46,7 +46,7 @@
 }
 
 .opButtons {
-
+    position: relative;
 }
 
 .opButtons input {
